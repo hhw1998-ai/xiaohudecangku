@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>知更认证工作台 MVP</title>
+  <style>
+    :root {
+      --bg:#f6f7f3;--surface:#fff;--soft:#eef2eb;--ink:#171a17;--muted:#5f675e;--weak:#8c9589;
+      --line:#d7dfd3;--strong:#b6c4b1;--green:#246f58;--green-soft:#e2f0ea;--gold:#9b6d21;
+      --gold-soft:#f3ead5;--red:#b25443;--red-soft:#f5e5e1;--blue:#2d6e96;--blue-soft:#e2eef5;
+      --nav:#19241d;--shadow:0 16px 36px rgba(31,44,34,.08);--radius:8px;
+      --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;--sans:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);letter-spacing:0}a{color:inherit;text-decoration:none}button{font:inherit}
+    .app{min-height:100vh;display:grid;grid-template-columns:258px minmax(0,1fr)}.side{position:sticky;top:0;height:100vh;background:var(--nav);color:#f6f3e9;padding:20px 14px;display:flex;flex-direction:column;gap:18px}
+    .brand{padding:0 10px 14px;border-bottom:1px solid rgba(255,255,255,.12)}.brand-line{display:flex;gap:10px;align-items:center}.mark{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:#f3ead5;color:#3b2c14;font-size:18px;font-weight:900}.brand h1{margin:0;font-size:21px;line-height:1}.brand p{margin:8px 0 0;color:rgba(246,243,233,.64);font-size:12px;line-height:1.55}
+    .nav{display:grid;gap:7px}.nav a{height:38px;display:flex;align-items:center;border-radius:8px;padding:0 10px;color:rgba(246,243,233,.74);background:rgba(255,255,255,.04);font-size:13px}.nav a:hover{background:rgba(255,255,255,.08);color:#fff}.side-note{margin-top:auto;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.05);padding:12px;color:rgba(246,243,233,.66);font-size:12px;line-height:1.6}
+    .main{min-width:0;padding:20px 24px 38px;display:grid;gap:16px}.hero{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:16px;align-items:stretch}.hero-copy{padding:18px 0}.eyebrow{margin:0 0 9px;color:var(--gold);font:800 12px var(--mono)}.hero h2{margin:0;font-size:34px;line-height:1.16}.hero p{max-width:760px;margin:11px 0 0;color:var(--muted);font-size:14px;line-height:1.75}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.metric{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:13px;box-shadow:var(--shadow)}.metric span{display:block;color:var(--muted);font-size:12px}.metric b{display:block;margin-top:7px;font:900 26px/1 var(--mono)}.metric small{display:block;margin-top:6px;color:var(--weak);font-size:11px}
+    .section{border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfa}.section-head h3{margin:0;font-size:16px}.section-head span{color:var(--weak);font:11px var(--mono);white-space:nowrap}
+    .roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px}.role-card{border:1px solid var(--line);border-radius:8px;padding:13px;background:#fff}.role-card.active{border-color:rgba(155,109,33,.45);background:var(--gold-soft)}.role-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.role-head strong{font-size:15px}.role-head em{font-style:normal;border-radius:999px;background:var(--soft);padding:4px 8px;color:var(--muted);font-size:11px;white-space:nowrap}.role-card.active .role-head em{background:#fff7e8;color:var(--gold)}.role-card p{margin:9px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.feature-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.feature-list span{border-radius:4px;background:var(--green-soft);color:var(--green);padding:4px 6px;font:11px var(--mono)}.role-card ul{margin:10px 0 0;padding-left:18px;color:var(--weak);font-size:12px;line-height:1.7}
+    .flow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px}.step{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px;min-height:126px}.step span{width:28px;height:28px;border-radius:7px;background:var(--nav);color:#f6f3e9;display:grid;place-items:center;font:900 13px var(--mono)}.step strong{display:block;margin-top:10px;font-size:14px}.step p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.6}
+    .tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px}.tool-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px;display:grid;gap:10px}.tool-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.tool-top strong{font-size:15px}.tool-top em{font-style:normal;border-radius:999px;background:var(--gold-soft);color:var(--gold);padding:4px 8px;font-size:11px;white-space:nowrap}.tool-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}.io-grid{display:grid;grid-template-columns:1fr;gap:7px}.io-grid div{border:1px dashed var(--line);border-radius:7px;background:#fbfcfa;padding:8px}.io-grid b{display:block;margin-bottom:6px;color:var(--ink);font-size:12px}.io-grid span{display:inline-flex;margin:0 5px 5px 0;border-radius:4px;background:var(--blue-soft);color:var(--blue);padding:4px 6px;font:11px var(--mono)}
+    .spaces{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:14px}.space-card{border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px}.space-card>div:first-child{display:flex;justify-content:space-between;gap:10px;align-items:center}.space-card strong{font-size:15px}.space-card em{font-style:normal;color:var(--green);font:800 12px var(--mono);white-space:nowrap}.space-card p{margin:9px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.tool-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.tool-tags span{border-radius:4px;background:var(--soft);color:#4e594d;padding:4px 6px;font:11px var(--mono)}.space-card ul{margin:10px 0 0;padding-left:18px;color:var(--muted);font-size:12px;line-height:1.6}
+    @media(max-width:1180px){.hero{grid-template-columns:1fr}.tools{grid-template-columns:repeat(2,minmax(0,1fr))}.spaces{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:860px){.app{grid-template-columns:1fr}.side{position:relative;height:auto}.main{padding:16px 14px 34px}.hero h2{font-size:27px}.roles,.flow,.tools,.spaces{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-line"><div class="mark">知</div><h1>知更</h1></div>
+        <p>百灵之上的专业认证层，面向顾问和行业研究型用户。</p>
+      </div>
+      <nav class="nav">
+        <a href="bailing-public-mvp.html">百灵公开版</a>
+        <a href="bailing-industry-spaces.html">百灵行业空间</a>
+        <a href="#roles">账号权限</a>
+        <a href="#tools">专业工具</a>
+      </nav>
+      <div class="side-note">这一版是静态权限原型：先验证账号层、认证层、行业空间和专业工具之间的产品逻辑。</div>
+    </aside>
+    <main class="main">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">ZHIGENG AUTH WORKSPACE</p>
+          <h2>让公开信息进入顾问工作流。</h2>
+          <p>知更不是另一个资讯页，而是把百灵的信息流和行业空间转成认证顾问可使用的晨报、素材卡、专题追踪和影响判断。</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>承接行业空间</span><b>6</b><small>来自百灵行业空间 MVP-2</small></div>
+          <div class="metric"><span>底层公开条目</span><b>110</b><small>保留原文链接和来源</small></div>
+          <div class="metric"><span>专业工具</span><b>4</b><small>认证后开放</small></div>
+          <div class="metric"><span>生成时间</span><b style="font-size:18px">06-14</b><small>2026-06-14T00:04:54</small></div>
+        </div>
+      </section>
+      <section class="section" id="roles">
+        <div class="section-head"><h3>账号与权限</h3><span>public / applicant / verified</span></div>
+        <div class="roles">
+      <article class="role-card " data-role="public">
+        <div class="role-head">
+          <strong>公开用户</strong>
+          <em>可直接使用</em>
+        </div>
+        <p>浏览百灵公开信息流、行业空间、原文链接和基础搜索筛选。</p>
+        <div class="feature-list"><span>公开信息流</span><span>行业空间浏览</span><span>原文跳转</span><span>基础筛选</span></div>
+        <ul><li>无个人订阅</li><li>无客户简报</li><li>无深度摘要</li><li>无专题追踪</li></ul>
+      </article>
+    
+      <article class="role-card " data-role="applicant">
+        <div class="role-head">
+          <strong>认证申请中</strong>
+          <em>提交资料后</em>
+        </div>
+        <p>选择行业方向，提交身份或职业材料，进入知更专业层审核。</p>
+        <div class="feature-list"><span>行业偏好</span><span>试用晨报</span><span>收藏夹</span><span>申请进度</span></div>
+        <ul><li>专业报告导出受限</li><li>客户空间不可用</li><li>专题追踪数量受限</li></ul>
+      </article>
+    
+      <article class="role-card active" data-role="verified">
+        <div class="role-head">
+          <strong>知更认证顾问</strong>
+          <em>审核通过</em>
+        </div>
+        <p>开启顾问工作台，用于客户晨报、专题追踪、PPT 素材卡和项目资料整理。</p>
+        <div class="feature-list"><span>客户晨报</span><span>PPT 素材卡</span><span>影响矩阵</span><span>专题追踪</span><span>行业订阅</span><span>项目资料夹</span></div>
+        <ul><li>需遵守来源版权和引用规范</li><li>公众号等授权源需单独开通</li></ul>
+      </article>
+    </div>
+      </section>
+      <section class="section">
+        <div class="section-head"><h3>认证申请流程</h3><span>4 steps</span></div>
+        <div class="flow">
+      <div class="step">
+        <span>1</span>
+        <strong>选择身份</strong>
+        <p>个人用户、企业经营者、咨询顾问、行业研究员。</p>
+      </div>
+    
+      <div class="step">
+        <span>2</span>
+        <strong>选择行业</strong>
+        <p>从管理咨询、制造业、能源基建、财政金融、区域招商等空间中选择。</p>
+      </div>
+    
+      <div class="step">
+        <span>3</span>
+        <strong>提交证明</strong>
+        <p>可用公司邮箱、名片、项目经历或机构证明。</p>
+      </div>
+    
+      <div class="step">
+        <span>4</span>
+        <strong>开通知更</strong>
+        <p>审核后获得专业工具、订阅和工作台能力。</p>
+      </div>
+    </div>
+      </section>
+      <section class="section" id="tools">
+        <div class="section-head"><h3>知更专业工具</h3><span>locked preview</span></div>
+        <div class="tools">
+      <article class="tool-card">
+        <div class="tool-top">
+          <strong>客户晨报</strong>
+          <em>认证后开放</em>
+        </div>
+        <p>把行业空间里的高分线索整理成客户可读的晨报提纲。</p>
+        <div class="io-grid">
+          <div><b>输入</b><span>行业空间</span><span>客户行业</span><span>关注关键词</span></div>
+          <div><b>输出</b><span>今日重点</span><span>顾问解读</span><span>建议动作</span></div>
+        </div>
+      </article>
+    
+      <article class="tool-card">
+        <div class="tool-top">
+          <strong>PPT 素材卡</strong>
+          <em>认证后开放</em>
+        </div>
+        <p>把政策、数据、公告转成可进入咨询汇报的素材卡。</p>
+        <div class="io-grid">
+          <div><b>输入</b><span>原文链接</span><span>指标或政策标题</span><span>项目主题</span></div>
+          <div><b>输出</b><span>事实卡</span><span>影响判断</span><span>引用链接</span></div>
+        </div>
+      </article>
+    
+      <article class="tool-card">
+        <div class="tool-top">
+          <strong>影响矩阵</strong>
+          <em>认证后开放</em>
+        </div>
+        <p>按客户、行业、区域、时间维度评估政策和数据影响。</p>
+        <div class="io-grid">
+          <div><b>输入</b><span>政策条目</span><span>客户类型</span><span>区域</span></div>
+          <div><b>输出</b><span>机会</span><span>风险</span><span>待确认问题</span></div>
+        </div>
+      </article>
+    
+      <article class="tool-card">
+        <div class="tool-top">
+          <strong>专题追踪</strong>
+          <em>认证后开放</em>
+        </div>
+        <p>围绕十五五、外资、民营经济、价格、PMI 等主题持续追踪。</p>
+        <div class="io-grid">
+          <div><b>输入</b><span>主题关键词</span><span>信源范围</span><span>更新频率</span></div>
+          <div><b>输出</b><span>变化记录</span><span>关键节点</span><span>提醒</span></div>
+        </div>
+      </article>
+    </div>
+      </section>
+      <section class="section">
+        <div class="section-head"><h3>行业空间接入</h3><span>6 spaces</span></div>
+        <div class="spaces">
+      <article class="space-card">
+        <div>
+          <strong>管理咨询</strong>
+          <em>98 条线索</em>
+        </div>
+        <p>今日重点集中在国家政策，建议关注政策窗口、客户简报、项目背景。</p>
+        <div class="tool-tags"><span>客户晨报</span><span>PPT 素材卡</span><span>影响矩阵</span></div>
+        <ul><li>国办关于加强监管防范风险促进私募投资基金高质量发展的指导意见</li><li>国务院关于印发《现代化应急体系建设“十五五”规划》的通知</li><li>关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</li></ul>
+      </article>
+    
+      <article class="space-card">
+        <div>
+          <strong>制造业</strong>
+          <em>14 条线索</em>
+        </div>
+        <p>今日重点集中在宏观数据，建议关注景气变化、成本压力、产业政策。</p>
+        <div class="tool-tags"><span>产业链追踪</span><span>竞品动向</span><span>成本预警</span></div>
+        <ul><li>2026年5月份工业生产者出厂价格同比上涨3.9% 环比上涨0.5%</li><li>2026年5月份居民消费价格同比上涨1.2%</li><li>国内成品油价格调整</li></ul>
+      </article>
+    
+      <article class="space-card">
+        <div>
+          <strong>能源与基础设施</strong>
+          <em>18 条线索</em>
+        </div>
+        <p>今日重点集中在国家政策，建议关注项目约束、监管变化、基础设施机会。</p>
+        <div class="tool-tags"><span>项目机会库</span><span>区域政策比对</span><span>风险条款摘要</span></div>
+        <ul><li>国务院关于印发《现代化应急体系建设“十五五”规划》的通知</li><li>关于印发《非化石能源电力消费核算指南(试行)》的通知(发改能源〔2026〕622号)</li><li>《电力重大事故隐患判定标准及治理监督管理规定》 2026年第41号令</li></ul>
+      </article>
+    
+      <article class="space-card">
+        <div>
+          <strong>财政金融</strong>
+          <em>33 条线索</em>
+        </div>
+        <p>今日重点集中在财政金融，建议关注资金环境、融资窗口、监管倾向。</p>
+        <div class="tool-tags"><span>融资环境雷达</span><span>政策原文摘要</span><span>机构观点汇总</span></div>
+        <ul><li>财政部第二次续发行2026年记账式附息（八期）国债</li><li>财政部发行2026年记账式附息（十二期）国债</li><li>中国人民银行与国际清算银行共同主办“应对全球金融不确定性——金融市场发展、投资策略与国际货币体系”高级别会议</li></ul>
+      </article>
+    
+      <article class="space-card">
+        <div>
+          <strong>区域招商</strong>
+          <em>19 条线索</em>
+        </div>
+        <p>今日重点集中在国家政策，建议关注招商方向、资金支持、产业目录。</p>
+        <div class="tool-tags"><span>招商话术</span><span>政策对标</span><span>项目线索</span></div>
+        <ul><li>关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</li><li>《中央预算内投资补助和贴息项目管理办法》 2025年第38号令</li><li>《鼓励外商投资产业目录(2025年版)》 2025年第37号令</li></ul>
+      </article>
+    
+      <article class="space-card">
+        <div>
+          <strong>宏观经营</strong>
+          <em>11 条线索</em>
+        </div>
+        <p>今日重点集中在宏观数据，建议关注需求变化、价格趋势、经营压力。</p>
+        <div class="tool-tags"><span>经营晨报</span><span>指标看板</span><span>管理层简报</span></div>
+        <ul><li>2026年5月份居民消费价格同比上涨1.2%</li><li>2026年5月中国采购经理指数运行情况</li><li>国内成品油价格调整</li></ul>
+      </article>
+    </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

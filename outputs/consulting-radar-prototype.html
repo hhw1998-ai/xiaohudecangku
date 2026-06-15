@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consulting Radar Prototype</title>
+  <style>
+    :root {
+      --bg: #f6f5f1;
+      --panel: #ffffff;
+      --panel-soft: #faf9f5;
+      --ink: #171717;
+      --muted: #67645d;
+      --weak: #9b9589;
+      --line: #ddd8ce;
+      --line-strong: #c8c0b3;
+      --nav: #20241f;
+      --nav-soft: #2b3029;
+      --teal: #087f7b;
+      --teal-soft: #e4f3ef;
+      --amber: #b87308;
+      --amber-soft: #fff1d6;
+      --red: #b84538;
+      --red-soft: #fae7e3;
+      --blue: #315a91;
+      --blue-soft: #e7edf6;
+      --green: #287449;
+      --green-soft: #e6f1e8;
+      --shadow: 0 10px 30px rgba(54, 45, 30, .08);
+      --radius: 8px;
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+      --sans: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      letter-spacing: 0;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 20px 14px;
+      background: var(--nav);
+      color: #f7f3e8;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 3px;
+      padding: 0 10px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: #8de1d2;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .brand-sub {
+      color: rgba(247,243,232,.58);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .nav-group { display: grid; gap: 4px; }
+    .nav-label {
+      padding: 0 10px 4px;
+      color: rgba(247,243,232,.42);
+      font-size: 11px;
+      font-family: var(--mono);
+    }
+
+    .nav-link {
+      border: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 40px;
+      padding: 0 10px;
+      border-radius: 8px;
+      background: transparent;
+      color: rgba(247,243,232,.74);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--nav-soft);
+      color: #fff;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-grid;
+      place-items: center;
+      color: #8de1d2;
+    }
+
+    .nav-spacer { flex: 1; }
+    .nav-note {
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.05);
+      color: rgba(247,243,232,.68);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 20px 24px 36px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .title-block h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .title-block p {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .metric-value {
+      margin-top: 5px;
+      font-family: var(--mono);
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .search {
+      min-width: min(420px, 100%);
+      flex: 1 1 420px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 11px;
+      height: 38px;
+      background: var(--panel-soft);
+    }
+
+    .search input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel-soft);
+      color: var(--muted);
+      height: 34px;
+      padding: 0 12px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .chip.active {
+      border-color: rgba(8,127,123,.35);
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-soft);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .panel-sub {
+      color: var(--weak);
+      font-family: var(--mono);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .timeline {
+      --time: 70px;
+      display: grid;
+      padding: 14px 0;
+    }
+
+    .day {
+      display: grid;
+      grid-template-columns: var(--time) 26px minmax(0,1fr);
+      align-items: center;
+      padding: 8px 16px;
+    }
+
+    .day-date {
+      text-align: right;
+      padding-right: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .day-line {
+      height: 1px;
+      background: var(--line-strong);
+    }
+
+    .item {
+      position: relative;
+      display: grid;
+      grid-template-columns: var(--time) 26px minmax(0,1fr);
+      padding: 0 16px 10px;
+    }
+
+    .item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(16px + var(--time) + 13px);
+      width: 1px;
+      background: var(--line);
+    }
+
+    .time {
+      padding: 17px 8px 0 0;
+      text-align: right;
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .dot {
+      position: relative;
+      z-index: 1;
+      justify-self: center;
+      margin-top: 21px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--teal);
+      box-shadow: 0 0 0 3px var(--panel);
+    }
+
+    .card {
+      min-width: 0;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+
+    .card:hover {
+      border-color: var(--line-strong);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px rgba(54, 45, 30, .1);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .source {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .source-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .source-type {
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--teal);
+    }
+
+    .source-type.policy { background: var(--red); }
+    .source-type.report { background: var(--blue); }
+    .source-type.capital { background: var(--amber); }
+    .source-type.company { background: var(--green); }
+
+    .score {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 7px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel-soft);
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .card-title {
+      display: block;
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .summary {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 7px;
+      border-radius: 4px;
+      background: #eee9dd;
+      color: #5c564d;
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+
+    .reason {
+      margin-top: 12px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      background: var(--green-soft);
+      color: #245c39;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .card[data-category="政策"] .reason { background: var(--red-soft); color: #8d332b; }
+    .card[data-category="报告"] .reason { background: var(--blue-soft); color: #294c79; }
+    .card[data-category="资本"] .reason { background: var(--amber-soft); color: #7b4a00; }
+
+    .intel-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .intel-field {
+      min-width: 0;
+      padding: 7px 8px;
+      border: 1px dashed var(--line);
+      border-radius: 6px;
+      background: var(--panel-soft);
+    }
+
+    .intel-field span {
+      display: block;
+      color: var(--weak);
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .intel-field b {
+      display: block;
+      margin-top: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .source-matrix {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .source-row {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) auto;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-soft);
+    }
+
+    .source-row strong {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .source-row span {
+      color: var(--muted);
+      font-size: 11px;
+      font-family: var(--mono);
+    }
+
+    .source-row small {
+      grid-column: 1 / -1;
+      color: var(--weak);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .badge.auto { color: var(--teal); background: var(--teal-soft); border-color: rgba(8,127,123,.25); }
+    .badge.manual { color: var(--amber); background: var(--amber-soft); border-color: rgba(184,115,8,.25); }
+    .badge.watch { color: var(--blue); background: var(--blue-soft); border-color: rgba(49,90,145,.25); }
+
+    .source-board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .source-card {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-soft);
+    }
+
+    .source-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .source-card h3 {
+      margin: 0;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .source-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .source-link {
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pipeline-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .pipeline-table th,
+    .pipeline-table td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .pipeline-table th {
+      border-top: 0;
+      color: var(--muted);
+      background: var(--panel-soft);
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .pipeline-table td:first-child {
+      font-weight: 800;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .schema-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .schema-field {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-soft);
+    }
+
+    .schema-field b {
+      display: block;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .schema-field span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .digest {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .digest-line {
+      display: grid;
+      grid-template-columns: 28px minmax(0,1fr);
+      gap: 9px;
+      align-items: start;
+    }
+
+    .rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      background: #eee9dd;
+      color: var(--ink);
+      font-family: var(--mono);
+      font-weight: 800;
+      font-size: 12px;
+    }
+
+    .digest-line p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .digest-line small {
+      color: var(--weak);
+      font-size: 11px;
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .step {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel-soft);
+    }
+
+    .step b {
+      display: block;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .step span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .mobile-tabs { display: none; }
+
+    @media (max-width: 1120px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .side-stack .panel:first-child { grid-column: 1 / -1; }
+      .source-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .schema-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 860px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main { padding: 16px 14px 76px; }
+      .topbar { grid-template-columns: 1fr; }
+      .status-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workflow { grid-template-columns: 1fr; }
+      .source-board,
+      .schema-grid,
+      .intel-meta { grid-template-columns: 1fr; }
+      .side-stack { grid-template-columns: 1fr; }
+      .item, .day { grid-template-columns: 54px 22px minmax(0, 1fr); }
+      .timeline { --time: 54px; }
+      .time { font-size: 12px; }
+      .mobile-tabs {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-top: 1px solid var(--line);
+        background: rgba(255,255,255,.96);
+      }
+      .mobile-tabs button {
+        border: 0;
+        background: transparent;
+        height: 56px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .mobile-tabs button.active { color: var(--teal); font-weight: 800; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-title"><span class="brand-mark">CR</span><span>Consulting Radar</span></div>
+        <div class="brand-sub">管理咨询顾问的信息收集、判断与推送工作台</div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">WORKSPACE</div>
+        <button class="nav-link active" data-filter="全部"><span class="nav-icon">◆</span>精选情报</button>
+        <button class="nav-link" data-filter="政策"><span class="nav-icon">◇</span>政策雷达</button>
+        <button class="nav-link" data-filter="行业"><span class="nav-icon">▣</span>行业动态</button>
+        <button class="nav-link" data-filter="公司"><span class="nav-icon">▤</span>公司公告</button>
+        <button class="nav-link" data-filter="资本"><span class="nav-icon">◈</span>资本市场</button>
+        <button class="nav-link" data-filter="报告"><span class="nav-icon">▥</span>报告库</button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">DELIVERY</div>
+        <button class="nav-link"><span class="nav-icon">↗</span>每日晨报</button>
+        <button class="nav-link"><span class="nav-icon">⌕</span>客户专题</button>
+        <button class="nav-link"><span class="nav-icon">✓</span>信源管理</button>
+      </div>
+
+      <div class="nav-spacer"></div>
+      <div class="nav-note">V2 已加入第一批真实公开入口、抓取方式、字段映射和公众号合规状态，下一步可接采集脚本。</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="title-block">
+          <h1>咨询顾问信息雷达</h1>
+          <p>把政策、行业、公司、资本和报告型信源整理成可用于项目周报、客户简报和行业研究的情报流。V2 重点从“页面原型”走向“真实信源台账”。</p>
+        </div>
+        <div class="status-strip">
+          <div class="metric"><div class="metric-label">真实信源</div><div class="metric-value">28</div></div>
+          <div class="metric"><div class="metric-label">可自动采集</div><div class="metric-value">19</div></div>
+          <div class="metric"><div class="metric-label">公众号候选</div><div class="metric-value">9</div></div>
+          <div class="metric"><div class="metric-label">字段完成度</div><div class="metric-value">82%</div></div>
+        </div>
+      </header>
+
+      <section class="toolbar" aria-label="筛选工具栏">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="搜索行业、地区、公司、政策关键词" />
+        </label>
+        <div class="filters" id="filters">
+          <button class="chip active" data-filter="全部">全部</button>
+          <button class="chip" data-filter="政策">政策</button>
+          <button class="chip" data-filter="行业">行业</button>
+          <button class="chip" data-filter="公司">公司</button>
+          <button class="chip" data-filter="资本">资本</button>
+          <button class="chip" data-filter="报告">报告</button>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">今日精选时间线</h2>
+            <span class="panel-sub">自动采集 + 顾问价值评分</span>
+          </div>
+
+          <div class="timeline" id="timeline">
+            <div class="day">
+              <div class="day-date">6月13日</div>
+              <div></div>
+              <div class="day-line"></div>
+            </div>
+
+            <article class="item">
+              <div class="time">08:40</div>
+              <div class="dot"></div>
+              <div class="card" data-category="政策">
+                <div class="card-head">
+                  <div class="source"><span class="source-type policy"></span><span class="source-name">国务院政策文件库</span></div>
+                  <div class="score">92</div>
+                </div>
+                <a class="card-title" href="https://www.gov.cn/zhengce/zhengcewenjianku/" target="_blank" rel="noopener noreferrer">重点产业扶持政策更新：多部门协同推动先进制造与服务业融合</a>
+                <p class="summary">原型示例：自动抓取政策文件标题、发布日期、发文单位和正文要点，识别受影响行业、地区和企业类型。</p>
+                <div class="tags"><span class="tag">国家政策</span><span class="tag">先进制造</span><span class="tag">战略规划</span></div>
+                <div class="intel-meta">
+                  <div class="intel-field"><span>影响对象</span><b>制造业客户 / 园区</b></div>
+                  <div class="intel-field"><span>咨询场景</span><b>产业规划</b></div>
+                  <div class="intel-field"><span>采集方式</span><b>公开网页解析</b></div>
+                </div>
+                <div class="reason"><b>咨询价值：</b>适合放入产业规划、园区招商和制造业客户战略项目的政策背景页。</div>
+              </div>
+            </article>
+
+            <article class="item">
+              <div class="time">09:10</div>
+              <div class="dot"></div>
+              <div class="card" data-category="报告">
+                <div class="card-head">
+                  <div class="source"><span class="source-type report"></span><span class="source-name">麦肯锡中国 / 咨询公司洞察</span></div>
+                  <div class="score">88</div>
+                </div>
+                <a class="card-title" href="https://www.mckinsey.com.cn/" target="_blank" rel="noopener noreferrer">行业生产率与组织转型洞察发布，可拆解为客户高管沟通材料</a>
+                <p class="summary">原型示例：抓取公开洞察文章，提炼核心观点、方法论框架、图表线索和可引用数据。</p>
+                <div class="tags"><span class="tag">管理咨询</span><span class="tag">组织转型</span><span class="tag">PPT素材</span></div>
+                <div class="intel-meta">
+                  <div class="intel-field"><span>影响对象</span><b>集团总部 / HR</b></div>
+                  <div class="intel-field"><span>咨询场景</span><b>组织诊断</b></div>
+                  <div class="intel-field"><span>采集方式</span><b>洞察页抓取</b></div>
+                </div>
+                <div class="reason"><b>咨询价值：</b>可转成客户访谈问题、标杆案例页和项目建议书中的趋势判断。</div>
+              </div>
+            </article>
+
+            <article class="item">
+              <div class="time">10:35</div>
+              <div class="dot"></div>
+              <div class="card" data-category="公司">
+                <div class="card-head">
+                  <div class="source"><span class="source-type company"></span><span class="source-name">巨潮资讯 / 上市公司公告</span></div>
+                  <div class="score">84</div>
+                </div>
+                <a class="card-title" href="http://www.cninfo.com.cn/" target="_blank" rel="noopener noreferrer">行业龙头发布年度经营计划，新增海外市场和数字化投入表述</a>
+                <p class="summary">原型示例：从公告和年报中抽取战略关键词、业务分部、资本开支、风险提示和管理层讨论。</p>
+                <div class="tags"><span class="tag">上市公司</span><span class="tag">年报</span><span class="tag">竞争跟踪</span></div>
+                <div class="intel-meta">
+                  <div class="intel-field"><span>影响对象</span><b>同业竞品 / 客户</b></div>
+                  <div class="intel-field"><span>咨询场景</span><b>竞争情报</b></div>
+                  <div class="intel-field"><span>采集方式</span><b>公告检索</b></div>
+                </div>
+                <div class="reason"><b>咨询价值：</b>适合做客户竞争对手监测、标杆拆解和年度战略复盘。</div>
+              </div>
+            </article>
+
+            <article class="item">
+              <div class="time">11:20</div>
+              <div class="dot"></div>
+              <div class="card" data-category="资本">
+                <div class="card-head">
+                  <div class="source"><span class="source-type capital"></span><span class="source-name">36氪 / 创投媒体</span></div>
+                  <div class="score">78</div>
+                </div>
+                <a class="card-title" href="https://36kr.com/" target="_blank" rel="noopener noreferrer">细分赛道融资升温，产业资本开始从单点投资转向生态布局</a>
+                <p class="summary">原型示例：抓取融资事件、投资方、金额、赛道、商业模式和上下游关系。</p>
+                <div class="tags"><span class="tag">融资</span><span class="tag">产业资本</span><span class="tag">市场进入</span></div>
+                <div class="intel-meta">
+                  <div class="intel-field"><span>影响对象</span><b>新业务 / 投资部</b></div>
+                  <div class="intel-field"><span>咨询场景</span><b>赛道扫描</b></div>
+                  <div class="intel-field"><span>采集方式</span><b>公开媒体页</b></div>
+                </div>
+                <div class="reason"><b>咨询价值：</b>可用于赛道热度判断、投资地图和客户新业务机会筛选。</div>
+              </div>
+            </article>
+
+            <article class="item">
+              <div class="time">14:05</div>
+              <div class="dot"></div>
+              <div class="card" data-category="行业">
+                <div class="card-head">
+                  <div class="source"><span class="source-type"></span><span class="source-name">国家统计局 / 行业运行数据</span></div>
+                  <div class="score">76</div>
+                </div>
+                <a class="card-title" href="https://www.stats.gov.cn/" target="_blank" rel="noopener noreferrer">重点行业月度数据出现分化，价格、产量和库存指标需联动跟踪</a>
+                <p class="summary">原型示例：把统计数据与行业新闻合并，形成“数据变化 + 可能原因 + 咨询含义”。</p>
+                <div class="tags"><span class="tag">宏观数据</span><span class="tag">行业监测</span><span class="tag">经营分析</span></div>
+                <div class="intel-meta">
+                  <div class="intel-field"><span>影响对象</span><b>行业研究团队</b></div>
+                  <div class="intel-field"><span>咨询场景</span><b>市场测算</b></div>
+                  <div class="intel-field"><span>采集方式</span><b>数据页监测</b></div>
+                </div>
+                <div class="reason"><b>咨询价值：</b>适合做行业月报、市场容量判断和经营诊断输入。</div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <aside class="side-stack">
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">信源矩阵</h2>
+              <span class="panel-sub">真实入口台账</span>
+            </div>
+            <div class="source-matrix">
+              <div class="source-row"><strong>国务院政策文件库</strong><span class="badge auto">自动</span><small>https://www.gov.cn/zhengce/zhengcewenjianku/</small></div>
+              <div class="source-row"><strong>国家发改委政策发布</strong><span class="badge auto">自动</span><small>https://www.ndrc.gov.cn/xxgk/zcfb/</small></div>
+              <div class="source-row"><strong>工信部政策文件</strong><span class="badge auto">自动</span><small>https://www.miit.gov.cn/zwgk/zcwj/</small></div>
+              <div class="source-row"><strong>国家统计局数据</strong><span class="badge watch">监测</span><small>https://www.stats.gov.cn/sj/</small></div>
+              <div class="source-row"><strong>巨潮资讯公告</strong><span class="badge auto">自动</span><small>http://www.cninfo.com.cn/</small></div>
+              <div class="source-row"><strong>麦肯锡、BCG、贝恩、四大洞察</strong><span class="badge auto">自动</span><small>公开洞察页，提取报告、文章、观点和案例。</small></div>
+              <div class="source-row"><strong>艾瑞、易观、QuestMobile、赛迪、清科、投中</strong><span class="badge manual">公众号候选</span><small>免费关注型研究信源，先做台账和合规校验。</small></div>
+              <div class="source-row"><strong>36氪、虎嗅、界面、第一财经、证券时报</strong><span class="badge auto">自动</span><small>发现商业、资本、公司和赛道变化。</small></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">晨报预览</h2>
+              <span class="panel-sub">08:30 推送</span>
+            </div>
+            <div class="digest">
+              <div class="digest-line"><div class="rank">1</div><p>三条政策与制造业、数据要素和绿色转型相关。<br><small>建议推送给产业规划与数字化项目组</small></p></div>
+              <div class="digest-line"><div class="rank">2</div><p>两家龙头公司年报提到海外扩张和渠道重构。<br><small>可进入客户竞争情报专题</small></p></div>
+              <div class="digest-line"><div class="rank">3</div><p>三篇公开报告提供组织效率和行业标杆案例。<br><small>可转为 PPT 素材候选</small></p></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2 class="panel-title">处理流水线</h2>
+              <span class="panel-sub">MVP</span>
+            </div>
+            <div class="workflow">
+              <div class="step"><b>发现</b><span>公开网页、公告、报告、公众号候选。</span></div>
+              <div class="step"><b>清洗</b><span>正文提取、去重、来源标准化。</span></div>
+              <div class="step"><b>理解</b><span>摘要、行业、地区、公司识别。</span></div>
+              <div class="step"><b>评分</b><span>重要性、可信度、项目相关性。</span></div>
+              <div class="step"><b>推送</b><span>晨报、专题、关键词预警。</span></div>
+            </div>
+          </section>
+        </aside>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">第一批真实信源清单</h2>
+          <span class="panel-sub">可逐步接入采集器</span>
+        </div>
+        <div class="source-board">
+          <div class="source-card">
+            <div class="source-card-head"><h3>国务院政策文件库</h3><span class="badge auto">权威</span></div>
+            <p>国家级政策、通知、规划、意见。适合做政策预警和项目背景。</p>
+            <a class="source-link" href="https://www.gov.cn/zhengce/zhengcewenjianku/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>国家发改委政策发布</h3><span class="badge auto">权威</span></div>
+            <p>产业政策、投资、价格、区域协调和宏观政策文件。</p>
+            <a class="source-link" href="https://www.ndrc.gov.cn/xxgk/zcfb/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>工信部政策文件</h3><span class="badge auto">权威</span></div>
+            <p>制造业、数字经济、工业互联网、中小企业和信息通信政策。</p>
+            <a class="source-link" href="https://www.miit.gov.cn/zwgk/zcwj/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>国家统计局数据</h3><span class="badge watch">数据</span></div>
+            <p>宏观经济、行业运行、价格、投资、消费、工业数据。</p>
+            <a class="source-link" href="https://www.stats.gov.cn/sj/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>巨潮资讯</h3><span class="badge auto">公告</span></div>
+            <p>A 股上市公司公告、年报、半年报、投资者关系材料。</p>
+            <a class="source-link" href="http://www.cninfo.com.cn/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>港交所披露易</h3><span class="badge auto">公告</span></div>
+            <p>港股公告、财报、公司通讯，可用于客户和竞品跟踪。</p>
+            <a class="source-link" href="https://www.hkexnews.hk/index_c.htm" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>麦肯锡中国</h3><span class="badge auto">洞察</span></div>
+            <p>公开洞见、行业研究、组织和战略管理观点。</p>
+            <a class="source-link" href="https://www.mckinsey.com.cn/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>36氪</h3><span class="badge auto">媒体</span></div>
+            <p>创业公司、融资、商业模式和新兴赛道变化。</p>
+            <a class="source-link" href="https://36kr.com/" target="_blank" rel="noopener noreferrer">打开入口</a>
+          </div>
+          <div class="source-card">
+            <div class="source-card-head"><h3>免费公众号候选池</h3><span class="badge manual">待确认</span></div>
+            <p>艾瑞咨询、易观分析、QuestMobile、赛迪顾问、清科研究、投中网等。</p>
+            <a class="source-link" href="#pipeline">查看采集边界</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="pipeline">
+        <div class="panel-head">
+          <h2 class="panel-title">采集边界与接入方式</h2>
+          <span class="panel-sub">先合法公开，后扩展授权</span>
+        </div>
+        <table class="pipeline-table">
+          <thead>
+            <tr><th>信源类型</th><th>接入方式</th><th>第一阶段字段</th><th>注意事项</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>政府网站</td><td>公开网页列表 + 详情页解析</td><td>标题、发文单位、日期、正文、政策层级、地区、行业</td><td>优先权威入口，保留原文链接和发布日期。</td></tr>
+            <tr><td>上市公司公告</td><td>公告检索页 + PDF/HTML 解析</td><td>公司、证券代码、公告类型、年度、业务关键词、战略表述</td><td>年报 PDF 需要单独做正文抽取和表格解析。</td></tr>
+            <tr><td>咨询/研究公开报告</td><td>公开洞察页抓取 + PDF 下载解析</td><td>机构、报告题目、行业、核心观点、图表线索、适用场景</td><td>只存摘要和链接，避免复制整篇报告。</td></tr>
+            <tr><td>商业媒体</td><td>公开列表页/搜索页监测</td><td>公司、赛道、融资、投资方、事件类型、商业模式</td><td>用于发现线索，重要内容再回溯原始公告或公司官网。</td></tr>
+            <tr><td>公众号</td><td>先做信源台账 + 人工/授权采集</td><td>公众号名称、主题、频率、是否免费、适用行业、采集状态</td><td>微信内容存在登录、版权和反爬边界，不作为第一阶段自动抓取核心。</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">情报数据结构</h2>
+          <span class="panel-sub">为搜索、评分和推送服务</span>
+        </div>
+        <div class="schema-grid">
+          <div class="schema-field"><b>source</b><span>信源名称、URL、可信等级、采集方式。</span></div>
+          <div class="schema-field"><b>content</b><span>标题、摘要、正文片段、原文链接、发布时间。</span></div>
+          <div class="schema-field"><b>taxonomy</b><span>政策、行业、公司、资本、报告等一级分类。</span></div>
+          <div class="schema-field"><b>entities</b><span>公司、地区、行业、机构、产品和人物识别。</span></div>
+          <div class="schema-field"><b>consulting_value</b><span>可用于战略、组织、市场、投融资、数字化等场景。</span></div>
+          <div class="schema-field"><b>impact</b><span>影响对象、影响强度、风险/机会方向。</span></div>
+          <div class="schema-field"><b>score</b><span>重要性、时效性、可信度、客户相关性综合评分。</span></div>
+          <div class="schema-field"><b>delivery</b><span>是否进入晨报、专题、预警、PPT 素材池。</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-tabs" aria-label="移动端导航">
+    <button class="active" data-filter="全部">精选</button>
+    <button data-filter="政策">政策</button>
+    <button data-filter="公司">公司</button>
+    <button data-filter="报告">报告</button>
+  </nav>
+
+  <script>
+    const cards = Array.from(document.querySelectorAll(".card"));
+    const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+    const searchInput = document.getElementById("searchInput");
+
+    let currentFilter = "全部";
+
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      cards.forEach((card) => {
+        const item = card.closest(".item");
+        const category = card.dataset.category;
+        const text = card.textContent.toLowerCase();
+        const categoryMatch = currentFilter === "全部" || category === currentFilter;
+        const queryMatch = !query || text.includes(query);
+        item.style.display = categoryMatch && queryMatch ? "grid" : "none";
+      });
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const next = button.dataset.filter;
+        if (!next) return;
+        currentFilter = next;
+        filterButtons.forEach((item) => item.classList.toggle("active", item.dataset.filter === next));
+        applyFilters();
+      });
+    });
+
+    searchInput.addEventListener("input", applyFilters);
+  </script>
+</body>
+</html>

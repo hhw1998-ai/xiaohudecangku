@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>百灵公开版 MVP</title>
+  <style>
+    :root {
+      --bg:#f7f8f4;--surface:#ffffff;--soft:#f0f3ed;--ink:#171a17;--muted:#62685f;--weak:#92998f;
+      --line:#dce2d7;--line-strong:#bcc8b9;--green:#22765f;--green-soft:#e5f2ed;--red:#b94e3f;
+      --red-soft:#f7e8e4;--blue:#2c6f9e;--blue-soft:#e5f0f7;--gold:#9c6d1f;--gold-soft:#f3ead7;
+      --nav:#1d261f;--shadow:0 14px 34px rgba(34,46,36,.08);--radius:8px;
+      --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;--sans:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);letter-spacing:0}a{color:inherit;text-decoration:none}
+    button,input{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}.side{position:sticky;top:0;height:100vh;background:var(--nav);color:#f6f3e9;padding:20px 14px;display:flex;flex-direction:column;gap:18px}
+    .brand{padding:0 10px 14px;border-bottom:1px solid rgba(255,255,255,.12)}.brand-main{display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;background:#d7efe6;color:#163a2d;font-weight:900;font-size:18px}
+    .brand h1{margin:0;font-size:21px;line-height:1}.brand p{margin:7px 0 0;color:rgba(246,243,233,.62);font-size:12px;line-height:1.55}.nav{display:grid;gap:6px}.nav-label{padding:0 10px;color:rgba(246,243,233,.45);font:11px var(--mono)}.nav button{height:40px;border:0;border-radius:8px;background:transparent;color:rgba(246,243,233,.74);text-align:left;padding:0 10px;cursor:pointer;display:flex;align-items:center;gap:10px}.nav button.active,.nav button:hover{background:rgba(255,255,255,.08);color:#fff}.nav i{width:10px;height:10px;border-radius:999px;background:var(--green)}.nav i.policy{background:var(--red)}.nav i.finance{background:var(--gold)}.grow{flex:1}.zhigeng{border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.06);padding:12px}.zhigeng b{display:block;font-size:14px}.zhigeng span{display:inline-flex;margin-top:8px;border:1px solid rgba(215,239,230,.28);border-radius:999px;padding:4px 8px;color:#d7efe6;font-size:11px}.zhigeng p{margin:9px 0 0;color:rgba(246,243,233,.64);font-size:12px;line-height:1.55}
+    .main{padding:20px 24px 38px;min-width:0;display:grid;gap:16px}.hero{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:16px;align-items:stretch}.hero-copy{padding:22px 0}.eyebrow{margin:0 0 9px;color:var(--green);font:700 12px var(--mono)}.hero h2{margin:0;font-size:34px;line-height:1.16}.hero p{max-width:760px;margin:11px 0 0;color:var(--muted);font-size:14px;line-height:1.75}.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.metric{padding:13px;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow)}.metric span{display:block;color:var(--muted);font-size:12px}.metric b{display:block;margin-top:7px;font:900 26px/1 var(--mono)}.metric small{display:block;margin-top:5px;color:var(--weak);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.search{height:38px;min-width:min(470px,100%);flex:1 1 430px;display:flex;align-items:center;gap:8px;padding:0 11px;border:1px solid var(--line);border-radius:8px;background:var(--soft)}.search input{width:100%;min-width:0;border:0;outline:0;background:transparent}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{height:34px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 12px;color:var(--muted);font-size:12px;cursor:pointer}.chip.active{border-color:rgba(34,118,95,.35);background:var(--green-soft);color:var(--green);font-weight:800}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px;align-items:start}.panel{border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}.panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);background:#fbfcfa}.panel-head h3{margin:0;font-size:15px}.panel-head span{color:var(--weak);font:11px var(--mono);white-space:nowrap}
+    .timeline{--time:74px;padding:14px 0}.feed-item{position:relative;display:grid;grid-template-columns:var(--time) 24px minmax(0,1fr);padding:0 16px 10px}.feed-item:before{content:"";position:absolute;top:0;bottom:0;left:calc(16px + var(--time) + 12px);width:1px;background:var(--line)}.time{padding:17px 8px 0 0;text-align:right;color:var(--muted);font:800 13px var(--mono)}.rail-dot{position:relative;z-index:1;justify-self:center;margin-top:21px;width:8px;height:8px;border-radius:999px;background:var(--blue);box-shadow:0 0 0 3px var(--surface)}.rail-dot.policy{background:var(--red)}.rail-dot.finance{background:var(--gold)}.news-card{min-width:0;border:1px solid var(--line);border-radius:8px;padding:13px 14px;background:var(--surface);transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}.news-card:hover{transform:translateY(-1px);border-color:var(--line-strong);box-shadow:0 12px 28px rgba(34,46,36,.1)}.news-meta{display:flex;align-items:center;gap:8px;min-width:0;margin-bottom:8px;color:var(--muted);font-size:12px}.news-meta span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.source-pill{flex:0 0 auto;display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-weight:800}.source-pill.policy{background:var(--red-soft);color:var(--red)}.source-pill.finance{background:var(--gold-soft);color:var(--gold)}.score{margin-left:auto;font:800 11px var(--mono);color:var(--green);border:1px solid var(--line);border-radius:999px;padding:3px 7px;background:#fbfcfa}.news-title{display:block;font-size:15px;font-weight:900;line-height:1.45}.news-title:hover{color:var(--green)}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tag{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:4px;background:var(--soft);color:#4f584e;font:11px var(--mono)}.value-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.value-grid div{min-width:0;border:1px dashed var(--line);border-radius:6px;background:#fbfcfa;padding:8px}.value-grid span{display:block;color:var(--weak);font-size:11px}.value-grid b{display:block;margin-top:4px;font-size:12px;line-height:1.45}.consulting-value{margin:10px 0 0;padding:9px 10px;border-radius:6px;background:var(--green-soft);color:#245b47;font-size:12px;line-height:1.65}
+    .side-stack{display:grid;gap:16px}.morning{padding:12px 16px 16px}.morning ol{margin:0;padding-left:18px;display:grid;gap:10px}.morning li{font-size:13px;line-height:1.5}.morning b{display:inline-flex;margin-right:6px;color:var(--green)}.morning a:hover{color:var(--green)}.source-list,.candidate-list{display:grid;gap:8px;padding:12px}.source-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 8px;padding:10px;border:1px solid var(--line);border-radius:8px;background:#fbfcfa}.source-row strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}.source-row small{display:block;margin-top:4px;color:var(--weak);font-size:11px}.source-row a{align-self:start;border-radius:999px;border:1px solid rgba(34,118,95,.25);background:var(--green-soft);color:var(--green);padding:4px 8px;font-size:11px;white-space:nowrap}.source-row.empty a{border-color:rgba(156,109,31,.25);background:var(--gold-soft);color:var(--gold)}.source-row.error a{border-color:rgba(185,78,63,.25);background:var(--red-soft);color:var(--red)}.source-row em{grid-column:1/-1;color:var(--muted);font-style:normal;font:12px var(--mono)}.candidate-row{padding:10px;border:1px dashed var(--line);border-radius:8px;background:#fbfcfa}.candidate-row strong{font-size:13px}.candidate-row span{float:right;color:var(--gold);font-size:11px;font-weight:800}.candidate-row p{clear:both;margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.55}.empty-note{display:none;padding:28px;color:var(--muted);text-align:center}
+    @media(max-width:1160px){.hero,.grid{grid-template-columns:1fr}.side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}.side-stack .panel:first-child{grid-column:1/-1}}
+    @media(max-width:820px){.app{grid-template-columns:1fr}.side{position:relative;height:auto}.main{padding:16px 14px 34px}.hero h2{font-size:28px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.side-stack{grid-template-columns:1fr}.timeline{--time:56px}.feed-item{grid-template-columns:var(--time) 22px minmax(0,1fr);padding-left:10px;padding-right:10px}.feed-item:before{left:calc(10px + var(--time) + 11px)}.time{font-size:12px}.value-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-main"><div class="mark">百</div><h1>百灵</h1></div>
+        <p>面向公众和企业经营者的政策、宏观、产业信息聚合入口。</p>
+      </div>
+      <nav class="nav" aria-label="分类筛选">
+        <div class="nav-label">PUBLIC FEED</div>
+        <button class="active" data-filter="全部"><i></i>全部信息</button>
+        <button data-filter="国家政策"><i class="policy"></i>国家政策</button>
+        <button data-filter="宏观数据"><i></i>宏观数据</button>
+        <button data-filter="财政金融"><i class="finance"></i>财政金融</button>
+      </nav>
+      <div class="grow"></div>
+      <section class="zhigeng">
+        <b>知更 · 顾问专业层</b>
+        <span>认证功能预留</span>
+        <p>后续承接登录、行业空间、客户晨报、专题追踪、深度摘要和顾问工作流。</p>
+      </section>
+    </aside>
+    <main class="main">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">BAILING PUBLIC MVP-1</p>
+          <h2>把权威政策、宏观数据和财政金融动态收进一个可验证的信息流。</h2>
+          <p>这一版先跑通公开权威源的采集、去重、分类、价值判断和原文跳转。它既能给普通用户看大势，也为后续“知更”顾问认证层打底。</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>真实采集条目</span><b>56</b><small>来自公开网页或公开 JSON</small></div>
+          <div class="metric"><span>已接入源</span><b>7</b><small>8 个源在监测</small></div>
+          <div class="metric"><span>国家政策</span><b>32</b><small>国务院、发改委等</small></div>
+          <div class="metric"><span>最新日期</span><b style="font-size:21px">06-12</b><small>生成时间 2026-06-13T20:31:42</small></div>
+        </div>
+      </section>
+      <section class="toolbar" aria-label="筛选工具栏">
+        <label class="search"><span>搜索</span><input id="searchInput" type="search" placeholder="输入政策、行业、机构、关键词" /></label>
+        <div class="chips">
+          <button class="chip active" data-filter="全部">全部</button>
+          <button class="chip" data-filter="国家政策">国家政策</button>
+          <button class="chip" data-filter="宏观数据">宏观数据</button>
+          <button class="chip" data-filter="财政金融">财政金融</button>
+        </div>
+      </section>
+      <section class="grid">
+        <section class="panel">
+          <div class="panel-head"><h3>百灵实时信息流</h3><span>public source feed</span></div>
+          <div class="timeline" id="timeline">
+      <article class="feed-item">
+        <div class="time">06-12</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.mof.gov.cn/zhengwuxinxi/caizhengxinwen/202606/t20260612_3991522.htm" target="_blank" rel="noopener noreferrer">廖岷出席亚太经合组织财政高官会并致辞</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-12</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="http://zwgls.mof.gov.cn/ywgg/202606/t20260610_3991432.htm" target="_blank" rel="noopener noreferrer">财政部第二次续发行2026年记账式附息（八期）国债</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-12</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="http://xm.mof.gov.cn/caizhengjiancha/202606/t20260603_3991118.htm" target="_blank" rel="noopener noreferrer">财政部厦门监管局：精准审核强监管 闭环管理保民生</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span><span class="tag">监管</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-12</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="http://qd.mof.gov.cn/gzdt/caizhengjiancha/202606/t20260611_3991471.htm" target="_blank" rel="noopener noreferrer">财政部青岛监管局：扛牢职责使命 奋力推动财政监管工作提质增效</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span><span class="tag">监管</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-11</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">80</span>
+          </div>
+          <a class="news-title" href="http://zwgls.mof.gov.cn/ywgg/202606/t20260605_3991208.htm" target="_blank" rel="noopener noreferrer">财政部发行2026年记账式附息（十二期）国债</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-11</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">78</span>
+          </div>
+          <a class="news-title" href="http://ln.mof.gov.cn/gzdt2/caizhengjiancha/202606/t20260602_3991039.htm" target="_blank" rel="noopener noreferrer">财政部辽宁监管局：筑牢审核防线 赋能资金增效 扎实做好转移支付申报审核工作</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span><span class="tag">监管</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-11</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">76</span>
+          </div>
+          <a class="news-title" href="http://dl.mof.gov.cn/caizhengjiancha/202604/t20260420_3987903.htm" target="_blank" rel="noopener noreferrer">财政部大连监管局：落实“三个一”做好预算执行常态化监管工作</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span><span class="tag">监管</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-10</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">90</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963923.html" target="_blank" rel="noopener noreferrer">2026年5月份居民消费价格同比上涨1.2%</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">价格</span><span class="tag">消费</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>经营分析 / 市场测算</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-10</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963922.html" target="_blank" rel="noopener noreferrer">2026年5月份工业生产者出厂价格同比上涨3.9% 环比上涨0.5%</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">工业</span><span class="tag">价格</span><span class="tag">工业价格</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>经营分析 / 市场测算</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-10</div>
+        <div class="rail-dot finance"></div>
+        <div class="news-card" data-category="财政金融" data-source="财政部财政新闻">
+          <div class="news-meta">
+            <span class="source-pill finance">财政金融</span>
+            <span>财政部财政新闻</span>
+            <span class="score">74</span>
+          </div>
+          <a class="news-title" href="https://www.mof.gov.cn/zhengwuxinxi/caizhengxinwen/202606/t20260610_3991434.htm" target="_blank" rel="noopener noreferrer">财政部召开2027年中央部门预算编制工作动员会</a>
+          <div class="tags"><span class="tag">财政金融</span><span class="tag">财政</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>投融资判断 / 财政政策 / 金融环境研判</b></div>
+            <div><span>公众价值</span><b>帮助普通用户理解财政金融动态对经营和投资环境的影响。</b></div>
+          </div>
+          <p class="consulting-value">适合用于判断财政金融环境、融资条件、市场预期和客户战略窗口。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-08</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">96</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202606/content_7071451.htm" target="_blank" rel="noopener noreferrer">国务院关于印发《现代化应急体系建设“十五五”规划》的通知</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">十五五</span><span class="tag">规划</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>公共治理 / 能源与基础设施咨询</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-08</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">96</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260608_1405753.html" target="_blank" rel="noopener noreferrer">关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">投资</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-05</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">94</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202606/content_7071204.htm" target="_blank" rel="noopener noreferrer">国办关于加强监管防范风险促进私募投资基金高质量发展的指导意见</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">投资</span><span class="tag">资本市场</span><span class="tag">监管</span><span class="tag">风险</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-05</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">94</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260605_1405707.html" target="_blank" rel="noopener noreferrer">关于总结推广上海浦东新区、深圳、厦门综合改革试点创新举措和经验做法的通知(发改体改〔2026〕695号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-05</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">90</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202606/t20260605_1963896.html" target="_blank" rel="noopener noreferrer">国家统计局党组理论学习中心组开展2026年第6次集体学习</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-04</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202606/t20260603_1963874.html" target="_blank" rel="noopener noreferrer">2026年5月下旬流通领域重要生产资料市场价格变动情况</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">价格</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>经营分析 / 市场测算</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-02</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">92</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202606/content_7070901.htm" target="_blank" rel="noopener noreferrer">国务院关于印发《加快农业农村现代化“十五五”规划》的通知</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">十五五</span><span class="tag">规划</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-02</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">92</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260602_1405666.html" target="_blank" rel="noopener noreferrer">关于在云霄直流开展输电权市场化交易的通知(发改体改〔2026〕734号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-01</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">90</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202606/content_7070755.htm" target="_blank" rel="noopener noreferrer">国务院关于对外投资的规定</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">投资</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-01</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">90</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260601_1405606.html" target="_blank" rel="noopener noreferrer">关于印发《非化石能源电力消费核算指南(试行)》的通知(发改能源〔2026〕622号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">能源</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>公共治理 / 能源与基础设施咨询</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-31</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202605/t20260531_1963824.html" target="_blank" rel="noopener noreferrer">2026年5月中国采购经理指数运行情况</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">PMI</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>行业景气 / 经营诊断</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-29</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202605/content_7070622.htm" target="_blank" rel="noopener noreferrer">国务院关于同意在粤港澳大湾区内地九市暂时调整实施有关行政法规规定的批复</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-29</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260529_1963822.html" target="_blank" rel="noopener noreferrer">国家统计局党组理论学习中心组开展2026年第5次集体学习</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-28</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202605/content_7070539.htm" target="_blank" rel="noopener noreferrer">国务院关于印发《城市更新“十五五”规划》的通知</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">十五五</span><span class="tag">规划</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-28</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202605/content_7070514.htm" target="_blank" rel="noopener noreferrer">国务院办公厅关于开展第三次全国残疾人抽样调查的通知</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-28</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202605/t20260528_1405517.html" target="_blank" rel="noopener noreferrer">关于印发贯彻实施民营经济促进法典型案例(第一批)的通知(发改民营〔2026〕708号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">民营经济</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-27</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202605/t20260527_1963808.html" target="_blank" rel="noopener noreferrer">2026年1—4月份全国规模以上工业企业利润增长18.2%</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">工业</span><span class="tag">经营分析</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>行业景气 / 经营诊断</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-25</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202605/t20260525_1405460.html" target="_blank" rel="noopener noreferrer">关于2026—2028年棉花目标价格政策的通知(发改价格〔2026〕733号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">价格</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-25</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260525_1963797.html" target="_blank" rel="noopener noreferrer">国家统计局2026年常规统计督察第3统计督察组进驻广东省开展统计督察</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-24</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">80</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202605/t20260522_1963786.html" target="_blank" rel="noopener noreferrer">2026年5月中旬流通领域重要生产资料市场价格变动情况</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">价格</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>经营分析 / 市场测算</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-22</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国务院最新政策">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国务院最新政策</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="https://www.gov.cn/zhengce/content/202605/content_7069960.htm" target="_blank" rel="noopener noreferrer">国务院关于推行常住地提供基本公共服务的实施意见</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-22</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202605/t20260522_1405365.html" target="_blank" rel="noopener noreferrer">关于印发《推进生态综合补偿实施方案》的通知(发改振兴〔2026〕697号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-22</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">78</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202605/t20260522_1963788.html" target="_blank" rel="noopener noreferrer">2025年全国1%人口抽样调查主要数据公报</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">人口</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-21</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260521_1963781.html" target="_blank" rel="noopener noreferrer">国家统计局2026年常规统计督察第1统计督察组进驻北京市开展统计督察</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-20</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委通知">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委通知</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202605/t20260520_1405333.html" target="_blank" rel="noopener noreferrer">关于开展2026年全国节能宣传周和全国低碳日活动的通知(发改环资〔2026〕664号)</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-20</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260520_1963771.html" target="_blank" rel="noopener noreferrer">康义赴上海财经大学调研交流</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-20</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">80</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260520_1963772.html" target="_blank" rel="noopener noreferrer">国家统计局2026年常规统计督察第5统计督察组进驻青海省开展统计督察</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-19</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">78</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260519_1963762.html" target="_blank" rel="noopener noreferrer">国家统计局2026年常规统计督察第4统计督察组进驻西藏自治区开展统计督察</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-19</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局统计新闻">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局统计新闻</span>
+            <span class="score">76</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/xw/tjxw/tjdt/202605/t20260519_1963761.html" target="_blank" rel="noopener noreferrer">国家统计局2026年常规统计督察第2统计督察组进驻上海市开展统计督察</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">05-18</div>
+        <div class="rail-dot data"></div>
+        <div class="news-card" data-category="宏观数据" data-source="国家统计局数据发布">
+          <div class="news-meta">
+            <span class="source-pill data">宏观数据</span>
+            <span>国家统计局数据发布</span>
+            <span class="score">76</span>
+          </div>
+          <a class="news-title" href="https://www.stats.gov.cn/sj/zxfb/202605/t20260518_1963732.html" target="_blank" rel="noopener noreferrer">1—4月份国民经济保持稳中有进发展态势</a>
+          <div class="tags"><span class="tag">宏观数据</span><span class="tag">宏观观察</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>宏观背景 / 行业月报</b></div>
+            <div><span>公众价值</span><b>帮助关注经济和产业的人快速了解重要数据变化。</b></div>
+          </div>
+          <p class="consulting-value">适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">04-09</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">96</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202604/t20260409_1404577.html" target="_blank" rel="noopener noreferrer">《电力重大事故隐患判定标准及治理监督管理规定》 2026年第41号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">能源</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>公共治理 / 能源与基础设施咨询</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">04-09</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">96</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202604/t20260409_1404573.html" target="_blank" rel="noopener noreferrer">关于发布《无人仓通用技术要求》等14项推荐性物流行业标准的公告 2026年第3号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">03-16</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">94</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202603/t20260316_1404162.html" target="_blank" rel="noopener noreferrer">关于2026年棉花关税配额外优惠关税税率加工贸易进口配额申领有关事项的公告 2026年第2号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">02-11</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">94</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202602/t20260211_1403694.html" target="_blank" rel="noopener noreferrer">《粮食流通行政执法办法》 2026年第40号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">01-23</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">92</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202601/t20260123_1403413.html" target="_blank" rel="noopener noreferrer">《国家发展改革委企业技术中心认定管理办法》 2025年第39号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">01-09</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">90</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202601/t20260109_1403140.html" target="_blank" rel="noopener noreferrer">《中央预算内投资补助和贴息项目管理办法》 2025年第38号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">投资</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">01-09</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">92</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202601/t20260109_1403157.html" target="_blank" rel="noopener noreferrer">遴选确定的国家发展改革委委托投资咨询评估机构 2026年第1号公告</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">投资</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">12-24</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202512/t20251224_1402564.html" target="_blank" rel="noopener noreferrer">《鼓励外商投资产业目录(2025年版)》 2025年第37号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">投资</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>产业规划 / 招商策略 / 企业战略</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">11-26</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202511/t20251126_1401911.html" target="_blank" rel="noopener noreferrer">《信用修复管理办法》 2025年第36号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">11-13</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202511/t20251113_1401596.html" target="_blank" rel="noopener noreferrer">《石油天然气基础设施规划建设与运营管理办法》 2025年第35号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">规划</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">10-30</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委政策发布">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委政策发布</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202510/t20251030_1401277.html" target="_blank" rel="noopener noreferrer">《工程建设项目招标代理机构管理暂行办法》 2025年第34号令</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">10-09</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">90</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202510/t20251009_1400872.html" target="_blank" rel="noopener noreferrer">关于治理价格无序竞争维护良好市场价格秩序的公告 2025年第4号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">价格</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">10-09</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">88</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202510/t20251009_1400865.html" target="_blank" rel="noopener noreferrer">关于2026年粮食、棉花进口关税配额申请和安排细则的公告 2025年第5号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">08-25</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">86</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202508/t20250825_1400000.html" target="_blank" rel="noopener noreferrer">关于2025年棉花关税配额外优惠关税税率加工贸易进口配额申领有关事项的公告 2025年第3号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">08-12</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">84</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202508/t20250812_1399751.html" target="_blank" rel="noopener noreferrer">2025年农产品进口关税配额再分配公告 2025年第2号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    
+      <article class="feed-item">
+        <div class="time">06-30</div>
+        <div class="rail-dot policy"></div>
+        <div class="news-card" data-category="国家政策" data-source="国家发改委公告">
+          <div class="news-meta">
+            <span class="source-pill policy">国家政策</span>
+            <span>国家发改委公告</span>
+            <span class="score">82</span>
+          </div>
+          <a class="news-title" href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202506/t20250630_1398879.html" target="_blank" rel="noopener noreferrer">国家发展改革委关于废止一批行政规范性文件的公告 2025年第1号</a>
+          <div class="tags"><span class="tag">国家政策</span><span class="tag">政策跟踪</span></div>
+          <div class="value-grid">
+            <div><span>顾问场景</span><b>政策研究 / 客户简报 / 项目背景</b></div>
+            <div><span>公众价值</span><b>帮助企业主和行业从业者及时了解国家政策方向。</b></div>
+          </div>
+          <p class="consulting-value">适合放入政策雷达、客户周报和项目前期背景研究，用于判断监管方向、产业机会和项目约束。</p>
+        </div>
+      </article>
+    <div class="empty-note" id="emptyNote">没有匹配的信息</div></div>
+        </section>
+        <aside class="side-stack">
+          <section class="panel">
+            <div class="panel-head"><h3>今日晨报候选</h3><span>知更预览</span></div>
+            <div class="morning"><ol><li><b>国家政策</b><a href="https://www.gov.cn/zhengce/content/202606/content_7071451.htm" target="_blank" rel="noopener noreferrer">国务院关于印发《现代化应急体系建设“十五五”规划》的通知</a></li><li><b>国家政策</b><a href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260608_1405753.html" target="_blank" rel="noopener noreferrer">关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</a></li><li><b>国家政策</b><a href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202604/t20260409_1404577.html" target="_blank" rel="noopener noreferrer">《电力重大事故隐患判定标准及治理监督管理规定》 2026年第41号令</a></li><li><b>国家政策</b><a href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202604/t20260409_1404573.html" target="_blank" rel="noopener noreferrer">关于发布《无人仓通用技术要求》等14项推荐性物流行业标准的公告 2026年第3号</a></li><li><b>国家政策</b><a href="https://www.gov.cn/zhengce/content/202606/content_7071204.htm" target="_blank" rel="noopener noreferrer">国办关于加强监管防范风险促进私募投资基金高质量发展的指导意见</a></li></ol></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h3>信源健康度</h3><span>7 ok</span></div>
+            <div class="source-list">
+      <div class="source-row ok">
+        <div>
+          <strong>国务院最新政策</strong>
+          <small>国家政策 · gov_json</small>
+        </div>
+        <a href="https://www.gov.cn/zhengce/zuixin/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row ok">
+        <div>
+          <strong>国家发改委政策发布</strong>
+          <small>国家政策 · html_list</small>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row ok">
+        <div>
+          <strong>国家发改委通知</strong>
+          <small>国家政策 · html_list</small>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row ok">
+        <div>
+          <strong>国家发改委公告</strong>
+          <small>国家政策 · html_list</small>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row ok">
+        <div>
+          <strong>国家统计局数据发布</strong>
+          <small>宏观数据 · html_list</small>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row ok">
+        <div>
+          <strong>国家统计局统计新闻</strong>
+          <small>宏观数据 · html_list</small>
+        </div>
+        <a href="https://www.stats.gov.cn/xw/tjxw/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row ok">
+        <div>
+          <strong>财政部财政新闻</strong>
+          <small>财政金融 · html_list</small>
+        </div>
+        <a href="https://www.mof.gov.cn/zhengwuxinxi/caizhengxinwen/" target="_blank" rel="noopener noreferrer">已接入</a>
+        <em>8 条</em>
+      </div>
+    
+      <div class="source-row empty">
+        <div>
+          <strong>人民银行工作动态</strong>
+          <small>财政金融 · html_list</small>
+        </div>
+        <a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/index.html" target="_blank" rel="noopener noreferrer">待微调</a>
+        <em> 条</em>
+      </div>
+    </div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h3>下一批信源队列</h3><span>adapter backlog</span></div>
+            <div class="candidate-list">
+      <div class="candidate-row">
+        <strong>工信部文件发布</strong>
+        <span>待适配</span>
+        <p>页面由搜索应用渲染，需要单独解析接口或浏览器适配。</p>
+      </div>
+    
+      <div class="candidate-row">
+        <strong>商务部政策发布</strong>
+        <span>待适配</span>
+        <p>栏目组件化渲染，先进入适配器队列。</p>
+      </div>
+    
+      <div class="candidate-row">
+        <strong>上交所上市公司公告</strong>
+        <span>待适配</span>
+        <p>动态表格应用，适合后续做交易所公告专用连接器。</p>
+      </div>
+    
+      <div class="candidate-row">
+        <strong>深交所上市公司公告</strong>
+        <span>待适配</span>
+        <p>动态表格应用，适合后续做交易所公告专用连接器。</p>
+      </div>
+    
+      <div class="candidate-row">
+        <strong>微信公众号候选源</strong>
+        <span>候选</span>
+        <p>公众号内容涉及登录、版权和反爬边界，先做候选清单和授权采集方案。</p>
+      </div>
+    </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </div>
+  <script>
+    const cards = Array.from(document.querySelectorAll(".news-card"));
+    const buttons = Array.from(document.querySelectorAll("[data-filter]"));
+    const searchInput = document.getElementById("searchInput");
+    const emptyNote = document.getElementById("emptyNote");
+    let currentFilter = "全部";
+    function applyFilters() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        const item = card.closest(".feed-item");
+        const category = card.dataset.category;
+        const okCategory = currentFilter === "全部" || category === currentFilter;
+        const okQuery = !query || card.textContent.toLowerCase().includes(query);
+        const show = okCategory && okQuery;
+        item.style.display = show ? "grid" : "none";
+        if (show) visible += 1;
+      });
+      emptyNote.style.display = visible ? "none" : "block";
+    }
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        currentFilter = button.dataset.filter || "全部";
+        buttons.forEach((b) => b.classList.toggle("active", b.dataset.filter === currentFilter));
+        applyFilters();
+      });
+    });
+    searchInput.addEventListener("input", applyFilters);
+  </script>
+</body>
+</html>

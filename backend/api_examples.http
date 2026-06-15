@@ -1,0 +1,43 @@
+### Health
+GET http://127.0.0.1:8765/api/health
+
+### Feed
+GET http://127.0.0.1:8765/api/items?category=产业监管&limit=10
+
+### Run collection now
+POST http://127.0.0.1:8765/api/collect/run
+Content-Type: application/json
+
+{}
+
+### Create watchlist
+POST http://127.0.0.1:8765/api/watchlists
+Content-Type: application/json
+
+{
+  "name": "机器人与新能源车",
+  "keywords": ["机器人", "新能源汽车", "中小企业"],
+  "categories": ["产业监管", "公司公告"]
+}
+
+### Generate brief
+POST http://127.0.0.1:8765/api/briefs/generate
+Content-Type: application/json
+
+{
+  "title": "新能源与汽车政策晨报",
+  "keywords": ["新能源", "汽车", "中小企业"],
+  "categories": ["产业监管", "公司公告"],
+  "limit": 8
+}
+
+### Impact matrix
+POST http://127.0.0.1:8765/api/impact-matrix
+Content-Type: application/json
+
+{
+  "topic": "新能源汽车",
+  "keywords": ["新能源", "汽车"],
+  "categories": ["产业监管", "公司公告"],
+  "limit": 6
+}

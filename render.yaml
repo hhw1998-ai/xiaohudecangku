@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: bailing-zhigeng-api
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python backend/server.py"
+    envVars:
+      - key: BAILING_DAILY_HOUR
+        value: "7"
+      - key: BAILING_DB_PATH
+        value: "/tmp/bailing.db"
+

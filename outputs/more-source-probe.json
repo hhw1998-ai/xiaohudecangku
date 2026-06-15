@@ -1,0 +1,525 @@
+[
+  {
+    "id": "miit-policy",
+    "url": "https://www.miit.gov.cn/zwgk/zcwj/wjfb/index.html",
+    "final": "https://www.miit.gov.cn/zwgk/zcwj/wjfb/index.html",
+    "status": "ok",
+    "content_type": "text/html; charset=utf-8",
+    "size": 2095,
+    "links": 0,
+    "dates": 1,
+    "samples": []
+  },
+  {
+    "id": "miit-news",
+    "url": "https://www.miit.gov.cn/xwdt/gxdt/sjdt/index.html",
+    "final": "https://www.miit.gov.cn/xwdt/gxdt/sjdt/index.html",
+    "status": "ok",
+    "content_type": "text/html; charset=utf-8",
+    "size": 5112,
+    "links": 15,
+    "dates": 1,
+    "samples": [
+      {
+        "title": "首页",
+        "href": "/index.html"
+      },
+      {
+        "title": "新闻发布",
+        "href": "/xwfb/index.html"
+      },
+      {
+        "title": "工作动态",
+        "href": "/xwfb/gzdt/index.html"
+      },
+      {
+        "title": "司局动态",
+        "href": "/xwdt/gxdt/sjdt/index.html"
+      },
+      {
+        "title": "时政要闻",
+        "href": "/xwfb/szyw/index.html"
+      },
+      {
+        "title": "工信动态",
+        "href": "/xwfb/gxdt/index.html"
+      },
+      {
+        "title": "部领导活动",
+        "href": "/xwfb/bldhd/index.html"
+      },
+      {
+        "title": "司局负责人发布",
+        "href": "/xwfb/sjfzrfb/index.html"
+      }
+    ]
+  },
+  {
+    "id": "samr-news",
+    "url": "https://www.samr.gov.cn/xw/zj/",
+    "final": "https://www.samr.gov.cn/xw/zj/",
+    "status": "ok",
+    "content_type": "text/html; charset=utf-8",
+    "size": 3320,
+    "links": 4,
+    "dates": 1,
+    "samples": [
+      {
+        "title": "首页",
+        "href": "/index.html"
+      },
+      {
+        "title": "新闻",
+        "href": "/xw/index.html"
+      },
+      {
+        "title": "总局",
+        "href": "/xw/zj/index.html"
+      },
+      {
+        "title": "总局",
+        "href": "/xw/zj/index.html"
+      }
+    ]
+  },
+  {
+    "id": "samr-policy",
+    "url": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/",
+    "final": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fgs/",
+    "status": "ok",
+    "content_type": "text/html; charset=utf-8",
+    "size": 3481,
+    "links": 6,
+    "dates": 1,
+    "samples": [
+      {
+        "title": "首页",
+        "href": "/index.html"
+      },
+      {
+        "title": "政务",
+        "href": "/zw/index.html"
+      },
+      {
+        "title": "政府信息公开",
+        "href": "/zw/zfxxgk/index.html"
+      },
+      {
+        "title": "法定主动公开内容",
+        "href": "/zw/zfxxgk/fdzdgknr/index.html"
+      },
+      {
+        "title": "法规司",
+        "href": "/zw/zfxxgk/fdzdgknr/fgs/index.html"
+      },
+      {
+        "title": "法规司",
+        "href": "/zw/zfxxgk/fdzdgknr/fgs/index.html"
+      }
+    ]
+  },
+  {
+    "id": "sasac-news",
+    "url": "http://www.sasac.gov.cn/n2588025/index.html",
+    "final": "http://www.sasac.gov.cn/n2588025/index.html",
+    "status": "ok",
+    "content_type": "text/html",
+    "size": 31109,
+    "links": 55,
+    "dates": 0,
+    "samples": [
+      {
+        "title": "首页",
+        "href": "../index.html"
+      },
+      {
+        "title": "机构概况",
+        "href": "../n2588020/index.html"
+      },
+      {
+        "title": "新闻发布",
+        "href": "../n2588025/index.html"
+      },
+      {
+        "title": "监管动态",
+        "href": "../n2588030/index.html"
+      },
+      {
+        "title": "政务公开",
+        "href": "../n2588035/index.html"
+      },
+      {
+        "title": "国资数据",
+        "href": "../n16582853/index.html"
+      },
+      {
+        "title": "互动交流",
+        "href": "../n2588040/index.html"
+      },
+      {
+        "title": "在线服务",
+        "href": "../n2588045/index.html"
+      }
+    ]
+  },
+  {
+    "id": "sasac-policy",
+    "url": "http://www.sasac.gov.cn/n2588035/n2588320/index.html",
+    "final": "http://www.sasac.gov.cn/n2588035/n2588320/index.html",
+    "status": "ok",
+    "content_type": "text/html",
+    "size": 22651,
+    "links": 38,
+    "dates": 0,
+    "samples": [
+      {
+        "title": "首页",
+        "href": "../../index.html"
+      },
+      {
+        "title": "机构概况",
+        "href": "../../n2588020/index.html"
+      },
+      {
+        "title": "新闻发布",
+        "href": "../../n2588025/index.html"
+      },
+      {
+        "title": "监管动态",
+        "href": "../../n2588030/index.html"
+      },
+      {
+        "title": "政务公开",
+        "href": "../../n2588035/index.html"
+      },
+      {
+        "title": "国资数据",
+        "href": "../../n16582853/index.html"
+      },
+      {
+        "title": "互动交流",
+        "href": "../../n2588040/index.html"
+      },
+      {
+        "title": "在线服务",
+        "href": "../../n2588045/index.html"
+      }
+    ]
+  },
+  {
+    "id": "nea-news",
+    "url": "https://www.nea.gov.cn/xwzx/nyyw.htm",
+    "final": "https://www.nea.gov.cn/xwzx/nyyw.htm",
+    "status": "ok",
+    "content_type": "text/html",
+    "size": 3445,
+    "links": 1,
+    "dates": 0,
+    "samples": [
+      {
+        "title": "首页",
+        "href": "http://www.nea.gov.cn/index.htm"
+      }
+    ]
+  },
+  {
+    "id": "customs-news",
+    "url": "http://www.customs.gov.cn/customs/302249/302266/302267/index.html",
+    "status": "error",
+    "error": "HTTP Error 412: Precondition Failed"
+  },
+  {
+    "id": "zhejiang-policy",
+    "url": "https://www.zj.gov.cn/col/col1229019364/index.html",
+    "final": "https://www.zj.gov.cn/col/col1229019364/index.html",
+    "status": "ok",
+    "content_type": "text/html; charset=utf-8",
+    "size": 1680,
+    "links": 0,
+    "dates": 0,
+    "samples": []
+  },
+  {
+    "id": "jiangsu-policy",
+    "url": "https://www.jiangsu.gov.cn/col/col64797/index.html",
+    "final": "https://www.jiangsu.gov.cn/col/col64797/index.html",
+    "status": "ok",
+    "content_type": "text/html; charset=UTF-8",
+    "size": 20829,
+    "links": 4,
+    "dates": 39,
+    "samples": [
+      {
+        "title": "首页>",
+        "href": "/index.html"
+      },
+      {
+        "title": "政务公开>",
+        "href": " http://www.js.gov.cn/col/col31255/index.html"
+      },
+      {
+        "title": "政府公报>",
+        "href": " http://www.js.gov.cn/col/col81677/index.html"
+      },
+      {
+        "title": "网上公报室",
+        "href": " http://www.jiangsu.gov.cn/col/col64797/index.html"
+      }
+    ]
+  },
+  {
+    "id": "sichuan-policy",
+    "url": "https://www.sc.gov.cn/10462/zfwjts/zfwj.shtml",
+    "status": "error",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "hubei-policy",
+    "url": "https://www.hubei.gov.cn/zfwj/",
+    "status": "error",
+    "error": "HTTP Error 412: Precondition Failed"
+  },
+  {
+    "id": "anhui-policy",
+    "url": "https://www.ah.gov.cn/public/column/1681?type=4&action=list",
+    "status": "error",
+    "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1081)>"
+  },
+  {
+    "id": "sse-announcements",
+    "url": "https://www.sse.com.cn/disclosure/listedinfo/announcement/",
+    "final": "https://www.sse.com.cn/disclosure/listedinfo/announcement/",
+    "status": "ok",
+    "content_type": "text/html",
+    "size": 26289,
+    "links": 98,
+    "dates": 1,
+    "samples": [
+      {
+        "title": "APP下载",
+        "href": "/home/app/update/"
+      },
+      {
+        "title": "微博微信",
+        "href": "/home/weixin/"
+      },
+      {
+        "title": "English",
+        "href": "http://english.sse.com.cn/"
+      },
+      {
+        "title": "繁",
+        "href": "http://big5.sse.com.cn/site/cht/www.sse.com.cn/"
+      },
+      {
+        "title": "一网通办",
+        "href": "//one.sse.com.cn/"
+      },
+      {
+        "title": "“三开门”专栏",
+        "href": "//www.sse.com.cn/transparency/home/"
+      },
+      {
+        "title": "简中EN",
+        "href": "//english.sse.com.cn/"
+      },
+      {
+        "title": "一网通办",
+        "href": "https://one.sse.com.cn/"
+      }
+    ]
+  },
+  {
+    "id": "szse-announcements",
+    "url": "https://www.szse.cn/disclosure/listed/notice/index.html",
+    "final": "https://www.szse.cn/disclosure/listed/notice/index.html",
+    "status": "ok",
+    "content_type": "text/html",
+    "size": 29914,
+    "links": 82,
+    "dates": 0,
+    "samples": [
+      {
+        "title": "信息披露",
+        "href": "../../"
+      },
+      {
+        "title": "上市公司信息",
+        "href": "../"
+      },
+      {
+        "title": "上市公司公告",
+        "href": "./"
+      },
+      {
+        "title": "交易备忘",
+        "href": "../../../disclosure/memo/index.html"
+      },
+      {
+        "title": "通知公告",
+        "href": "../../../disclosure/notice/general/index.html"
+      },
+      {
+        "title": "停复牌",
+        "href": "../../../disclosure/notice/temp/index.html"
+      },
+      {
+        "title": "上市公司",
+        "href": "../../../disclosure/notice/company/index.html"
+      },
+      {
+        "title": "固收产品",
+        "href": "../../../disclosure/notice/bond/index.html"
+      }
+    ]
+  },
+  {
+    "id": "cninfo",
+    "url": "http://www.cninfo.com.cn/new/commonUrl/pageOfSearch?url=disclosure/list/search",
+    "final": "http://www.cninfo.com.cn/new/commonUrl/pageOfSearch?url=disclosure/list/search",
+    "status": "ok",
+    "content_type": "",
+    "size": 0,
+    "links": 0,
+    "dates": 0,
+    "samples": []
+  },
+  {
+    "id": "mckinsey-cn",
+    "url": "https://www.mckinsey.com.cn/insights/",
+    "final": "https://www.mckinsey.com.cn/insights/",
+    "status": "ok",
+    "content_type": "text/html; charset=UTF-8",
+    "size": 231533,
+    "links": 107,
+    "dates": 83,
+    "samples": [
+      {
+        "title": "联络我们",
+        "href": "https://www.mckinsey.com.cn/contact-us/"
+      },
+      {
+        "title": "English",
+        "href": "https://www.mckinsey.com/cn"
+      },
+      {
+        "title": "主页",
+        "href": "https://www.mckinsey.com.cn/"
+      },
+      {
+        "title": "制胜中国新篇章",
+        "href": "https://www.mckinsey.com.cn/%e5%88%b6%e8%83%9c%e4%b8%ad%e5%9b%bd%e6%96%b0%e7%af%87%e7%ab%a0/"
+      },
+      {
+        "title": "洞见",
+        "href": "https://www.mckinsey.com.cn/insights/"
+      },
+      {
+        "title": "汽车",
+        "href": "https://www.mckinsey.com.cn/insights/autos/"
+      },
+      {
+        "title": "金融服务",
+        "href": "https://www.mckinsey.com.cn/insights/banking-insurance/"
+      },
+      {
+        "title": "消费者",
+        "href": "https://www.mckinsey.com.cn/insights/consumers/"
+      }
+    ]
+  },
+  {
+    "id": "bcg-cn",
+    "url": "https://www.bcg.com/zh-cn/publications",
+    "final": "https://www.bcg.com/publications",
+    "status": "ok",
+    "content_type": "text/html;charset=UTF-8",
+    "size": 599972,
+    "links": 164,
+    "dates": 0,
+    "samples": [
+      {
+        "title": "Log error View Profile",
+        "href": "https://www.bcg.com/userprofile"
+      },
+      {
+        "title": "Edit Profile",
+        "href": "https://www.bcg.com/userprofile?mode=edit"
+      },
+      {
+        "title": "Manage Subscriptions",
+        "href": "https://www.bcg.com/subscription"
+      },
+      {
+        "title": "My Saved Content",
+        "href": "https://www.bcg.com/userprofile/savedarticles"
+      },
+      {
+        "title": "Aerospace and Defense Industry",
+        "href": "https://www.bcg.com/industries/aerospace-defense/overview"
+      },
+      {
+        "title": "Visit Page",
+        "href": "https://www.bcg.com/industries/aerospace-defense/overview"
+      },
+      {
+        "title": "Automotive Industry",
+        "href": "https://www.bcg.com/industries/automotive/overview"
+      },
+      {
+        "title": "Visit Page",
+        "href": "https://www.bcg.com/industries/automotive/overview"
+      }
+    ]
+  },
+  {
+    "id": "deloitte-cn",
+    "url": "https://www2.deloitte.com/cn/zh/insights.html",
+    "status": "error",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "id": "pwc-cn",
+    "url": "https://www.pwccn.com/zh/research-and-insights.html",
+    "final": "https://www.pwccn.com/zh/research-and-insights.html",
+    "status": "ok",
+    "content_type": "text/html; charset=UTF-8",
+    "size": 181618,
+    "links": 135,
+    "dates": 3,
+    "samples": [
+      {
+        "title": "研究与洞察",
+        "href": "https://www.pwccn.com/zh/research-and-insights.html"
+      },
+      {
+        "title": "服务",
+        "href": "https://www.pwccn.com/zh/services.html"
+      },
+      {
+        "title": "审计及鉴证",
+        "href": "https://www.pwccn.com/zh/services/audit-and-assurance/capabilities.html"
+      },
+      {
+        "title": "管理咨询",
+        "href": "https://www.pwccn.com/zh/services/consulting.html"
+      },
+      {
+        "title": "交易服务",
+        "href": "https://www.pwccn.com/zh/services/deals-m-and-a.html"
+      },
+      {
+        "title": "税务服务",
+        "href": "https://www.pwccn.com/zh/services/tax.html"
+      },
+      {
+        "title": "审计及鉴证",
+        "href": "https://www.pwccn.com/zh/services/audit-and-assurance/capabilities.html"
+      },
+      {
+        "title": "管理咨询",
+        "href": "https://www.pwccn.com/zh/services/consulting.html"
+      }
+    ]
+  }
+]

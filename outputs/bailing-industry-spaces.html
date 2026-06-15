@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>百灵行业空间 MVP</title>
+  <style>
+    :root {
+      --bg:#f5f7f4;--surface:#fff;--soft:#eef3ee;--ink:#171a17;--muted:#5f675e;--weak:#8e978b;
+      --line:#d8e0d5;--strong:#b8c6b4;--green:#246f58;--green-soft:#e2f0ea;--red:#b25544;
+      --red-soft:#f5e5e1;--blue:#2d6994;--blue-soft:#e3eef5;--gold:#976b22;--gold-soft:#f2e8d4;
+      --nav:#19241d;--shadow:0 16px 36px rgba(32,45,34,.08);--radius:8px;
+      --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;--sans:Inter,"PingFang SC","Microsoft YaHei",Arial,sans-serif;
+    }
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);letter-spacing:0}a{color:inherit;text-decoration:none}button{font:inherit}
+    .app{min-height:100vh;display:grid;grid-template-columns:260px minmax(0,1fr)}.side{position:sticky;top:0;height:100vh;background:var(--nav);color:#f6f3e9;padding:20px 14px;display:flex;flex-direction:column;gap:18px}
+    .brand{padding:0 10px 14px;border-bottom:1px solid rgba(255,255,255,.12)}.brand-line{display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border-radius:8px;background:#d8efe4;color:#153a2c;display:grid;place-items:center;font-size:18px;font-weight:900}.brand h1{margin:0;font-size:21px;line-height:1}.brand p{margin:8px 0 0;color:rgba(246,243,233,.62);font-size:12px;line-height:1.55}
+    .side-metric{display:grid;grid-template-columns:1fr 1fr;gap:8px}.side-metric div{border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px;background:rgba(255,255,255,.05)}.side-metric span{display:block;color:rgba(246,243,233,.55);font-size:11px}.side-metric b{display:block;margin-top:5px;font:900 22px/1 var(--mono)}.side-note{margin-top:auto;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:12px;background:rgba(255,255,255,.05);color:rgba(246,243,233,.66);font-size:12px;line-height:1.6}
+    .main{padding:20px 24px 38px;min-width:0;display:grid;gap:16px}.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:end}.top p{margin:0 0 8px;color:var(--green);font:800 12px var(--mono)}.top h2{margin:0;font-size:32px;line-height:1.18}.top small{display:block;margin-top:9px;color:var(--muted);font-size:14px;line-height:1.65}.top a{height:36px;display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;padding:0 12px;background:var(--surface);color:var(--green);font-weight:800;font-size:13px}
+    .tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}.space-tab{min-width:0;text-align:left;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:11px;cursor:pointer;box-shadow:var(--shadow)}.space-tab:hover,.space-tab.active{border-color:rgba(36,111,88,.45);background:var(--green-soft)}.space-tab span{display:inline-flex;width:28px;height:24px;border-radius:6px;align-items:center;justify-content:center;background:var(--nav);color:#f6f3e9;font-size:12px;font-weight:900}.space-tab b{display:block;margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}.space-tab em{display:block;margin-top:5px;color:var(--muted);font-style:normal;font:12px var(--mono)}
+    .space-panel{display:none;border:1px solid var(--line);border-radius:8px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}.space-panel.active{display:block}.space-head{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;padding:18px;border-bottom:1px solid var(--line);background:#fbfcfa}.space-head p{margin:0;color:var(--muted);font-size:13px}.space-head h2{margin:6px 0 0;font-size:24px}.brief{align-self:center;border-left:3px solid var(--green);padding:9px 12px;background:var(--green-soft);border-radius:0 8px 8px 0;color:#245b47;font-size:13px;line-height:1.65}.signals{display:flex;gap:7px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line)}.signals span{min-height:25px;display:inline-flex;align-items:center;border-radius:999px;background:var(--soft);padding:0 9px;color:#4e594d;font-size:12px}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0}.feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px;border-right:1px solid var(--line)}.intel-card{min-width:0;border:1px solid var(--line);border-radius:8px;background:#fff;padding:13px;display:flex;flex-direction:column;gap:8px}.intel-card:hover{border-color:var(--strong)}.meta{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.meta span{border-radius:999px;background:var(--soft);padding:3px 7px}.meta strong{margin-left:auto;color:var(--green);font:900 12px var(--mono)}.intel-card a{font-size:15px;font-weight:900;line-height:1.45}.intel-card a:hover{color:var(--green)}.intel-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.65}.matches{display:flex;gap:6px;flex-wrap:wrap}.matches span{border-radius:4px;background:var(--blue-soft);color:var(--blue);padding:4px 6px;font:11px var(--mono)}.intel-card footer{margin-top:auto;color:var(--weak);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tools{display:grid;align-content:start;gap:14px;padding:14px;background:#fbfcfa}.tools section{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:12px}.tools h3{margin:0 0 10px;font-size:14px}.tool-grid{display:grid;gap:7px}.tool-grid button{height:34px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--muted);font-size:12px;text-align:left;padding:0 10px}.tools ul{margin:0;padding-left:18px;color:var(--muted);font-size:12px;line-height:1.8}
+    @media(max-width:1180px){.tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.workspace{grid-template-columns:1fr}.feed{border-right:0;border-bottom:1px solid var(--line)}.tools{grid-template-columns:1fr 1fr}}
+    @media(max-width:820px){.app{grid-template-columns:1fr}.side{position:relative;height:auto}.main{padding:16px 14px 34px}.top{grid-template-columns:1fr}.top h2{font-size:26px}.tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.space-head{grid-template-columns:1fr}.feed{grid-template-columns:1fr}.tools{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <div class="brand-line"><div class="mark">百</div><h1>百灵</h1></div>
+        <p>行业空间版，把同一批权威信息映射到不同人群和行业场景。</p>
+      </div>
+      <div class="side-metric">
+        <div><span>行业空间</span><b>6</b></div>
+        <div><span>匹配线索</span><b>156</b></div>
+        <div><span>原始条目</span><b>205</b></div>
+        <div><span>版本</span><b style="font-size:16px">MVP-2</b></div>
+      </div>
+      <div class="side-note">知更将在这些空间之上承接认证顾问能力：晨报、专题、客户简报、项目素材和深度摘要。</div>
+    </aside>
+    <main class="main">
+      <header class="top">
+        <div>
+          <p>BAILING INDUSTRY SPACES</p>
+          <h2>从信息流进入行业空间。</h2>
+          <small>生成时间 2026-06-14T00:04:54，基于第一步真实公开采集数据重组。</small>
+        </div>
+        <a href="bailing-public-mvp.html">返回公开版</a>
+      </header>
+      <nav class="tabs" aria-label="行业空间">
+      <button class="space-tab active" data-space="consulting">
+        <span>咨询</span>
+        <b>管理咨询</b>
+        <em>53 条</em>
+      </button>
+    
+      <button class="space-tab " data-space="manufacturing">
+        <span>制造</span>
+        <b>制造业</b>
+        <em>19 条</em>
+      </button>
+    
+      <button class="space-tab " data-space="energy_infra">
+        <span>能源</span>
+        <b>能源与基础设施</b>
+        <em>20 条</em>
+      </button>
+    
+      <button class="space-tab " data-space="finance">
+        <span>金融</span>
+        <b>财政金融</b>
+        <em>22 条</em>
+      </button>
+    
+      <button class="space-tab " data-space="regional">
+        <span>区域</span>
+        <b>区域招商</b>
+        <em>27 条</em>
+      </button>
+    
+      <button class="space-tab " data-space="macro_ops">
+        <span>宏观</span>
+        <b>宏观经营</b>
+        <em>15 条</em>
+      </button>
+    </nav>
+      
+      <section class="space-panel active" data-panel="consulting">
+        <div class="space-head">
+          <div>
+            <p>咨询顾问 / 项目经理</p>
+            <h2>管理咨询空间</h2>
+          </div>
+          <div class="brief">今日重点集中在????，建议关注政策窗口、客户简报、项目背景。</div>
+        </div>
+        <div class="signals"><span>政策窗口</span><span>客户简报</span><span>项目背景</span><span>经营诊断</span></div>
+        <div class="workspace">
+          <div class="feed">
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>44</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963922.html" target="_blank" rel="noopener noreferrer">2026年5月份工业生产者出厂价格同比上涨3.9% 环比上涨0.5%</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>工业</span><span>价格</span><span>经营</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-05</span>
+          <span>????</span>
+          <strong>44</strong>
+        </div>
+        <a href="https://www.gov.cn/zhengce/content/202606/content_7071204.htm" target="_blank" rel="noopener noreferrer">国办关于加强监管防范风险促进私募投资基金高质量发展的指导意见</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span><span>监管</span><span>风险</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://36kr.com/newsflashes/3851282943792133" target="_blank" rel="noopener noreferrer">云南铜业：今年以来硫酸销售价格持续处于高位</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span><span>经营</span></div>
+        <footer>36???</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://36kr.com/newsflashes/3851282375971842" target="_blank" rel="noopener noreferrer">美格智能：存储芯片价格上涨成本在合理、有序向下游客户传导</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span><span>经营</span></div>
+        <footer>36???</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963923.html" target="_blank" rel="noopener noreferrer">2026年5月份居民消费价格同比上涨1.2%</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span><span>经营</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-08</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://www.gov.cn/zhengce/content/202606/content_7071451.htm" target="_blank" rel="noopener noreferrer">国务院关于印发《现代化应急体系建设“十五五”规划》的通知</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>规划</span><span>十五五</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="http://xm.mof.gov.cn/caizhengjiancha/202606/t20260603_3991118.htm" target="_blank" rel="noopener noreferrer">财政部厦门监管局：精准审核强监管 闭环管理保民生</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>监管</span><span>财政</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="http://qd.mof.gov.cn/gzdt/caizhengjiancha/202606/t20260611_3991471.htm" target="_blank" rel="noopener noreferrer">财政部青岛监管局：扛牢职责使命 奋力推动财政监管工作提质增效</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>监管</span><span>财政</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-11</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="http://ln.mof.gov.cn/gzdt2/caizhengjiancha/202606/t20260602_3991039.htm" target="_blank" rel="noopener noreferrer">财政部辽宁监管局：筑牢审核防线 赋能资金增效 扎实做好转移支付申报审核工作</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>监管</span><span>财政</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-11</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="http://dl.mof.gov.cn/caizhengjiancha/202604/t20260420_3987903.htm" target="_blank" rel="noopener noreferrer">财政部大连监管局：落实“三个一”做好预算执行常态化监管工作</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>监管</span><span>财政</span></div>
+        <footer>???????</footer>
+      </article>
+    </div>
+          <aside class="tools">
+            <section>
+              <h3>知更工具</h3>
+              <div class="tool-grid"><button title="知更认证后开放">客户晨报</button><button title="知更认证后开放">PPT 素材卡</button><button title="知更认证后开放">影响矩阵</button></div>
+            </section>
+            <section>
+              <h3>待补信源</h3>
+              <ul><li>咨询公司观点</li><li>券商行业报告</li><li>重点客户公告</li></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+    
+      <section class="space-panel " data-panel="manufacturing">
+        <div class="space-head">
+          <div>
+            <p>制造企业 / 产业园区</p>
+            <h2>制造业空间</h2>
+          </div>
+          <div class="brief">今日重点集中在????，建议关注景气变化、成本压力、产业政策。</div>
+        </div>
+        <div class="signals"><span>景气变化</span><span>成本压力</span><span>产业政策</span><span>供应链</span></div>
+        <div class="workspace">
+          <div class="feed">
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>44</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963922.html" target="_blank" rel="noopener noreferrer">2026年5月份工业生产者出厂价格同比上涨3.9% 环比上涨0.5%</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>工业</span><span>生产者</span><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://36kr.com/newsflashes/3851282943792133" target="_blank" rel="noopener noreferrer">云南铜业：今年以来硫酸销售价格持续处于高位</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>36???</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://36kr.com/newsflashes/3851282375971842" target="_blank" rel="noopener noreferrer">美格智能：存储芯片价格上涨成本在合理、有序向下游客户传导</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>36???</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963923.html" target="_blank" rel="noopener noreferrer">2026年5月份居民消费价格同比上涨1.2%</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>04-09</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202604/t20260409_1404573.html" target="_blank" rel="noopener noreferrer">关于发布《无人仓通用技术要求》等14项推荐性物流行业标准的公告 2026年第3号</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>物流</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-11</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.beijing.gov.cn/zhengce/zhengcefagui/202606/t20260612_4697527.html" target="_blank" rel="noopener noreferrer">北京市经济和信息化局关于开展2026年度市级绿色工厂和绿色工业园区征集工作的通知</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>工业</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-08</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.beijing.gov.cn/zhengce/zhengcefagui/202606/t20260609_4693004.html" target="_blank" rel="noopener noreferrer">北京市经济和信息化局关于开展第二批制造业数字化转型促进中心建设工作的通知</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>制造</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-04</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xwdt/xwfb/202606/t20260604_1405695.html" target="_blank" rel="noopener noreferrer">国内成品油价格调整</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-04</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260603_1963874.html" target="_blank" rel="noopener noreferrer">2026年5月下旬流通领域重要生产资料市场价格变动情况</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-04</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.shanghai.gov.cn/nw12344/20260604/050b3a7e01004ad89d6f4798a5ca0139.html" target="_blank" rel="noopener noreferrer">上海市发展和改革委员会关于车用汽、柴油价格的通知（）</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    </div>
+          <aside class="tools">
+            <section>
+              <h3>知更工具</h3>
+              <div class="tool-grid"><button title="知更认证后开放">产业链追踪</button><button title="知更认证后开放">竞品动向</button><button title="知更认证后开放">成本预警</button></div>
+            </section>
+            <section>
+              <h3>待补信源</h3>
+              <ul><li>工信部文件</li><li>龙头企业年报</li><li>产业链价格数据</li></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+    
+      <section class="space-panel " data-panel="energy_infra">
+        <div class="space-head">
+          <div>
+            <p>能源、公用事业、基建客户</p>
+            <h2>能源与基础设施空间</h2>
+          </div>
+          <div class="brief">今日重点集中在????，建议关注项目约束、监管变化、基础设施机会。</div>
+        </div>
+        <div class="signals"><span>项目约束</span><span>监管变化</span><span>基础设施机会</span><span>安全韧性</span></div>
+        <div class="workspace">
+          <div class="feed">
+      <article class="intel-card">
+        <div class="meta">
+          <span>11-13</span>
+          <span>????</span>
+          <strong>43</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202511/t20251113_1401596.html" target="_blank" rel="noopener noreferrer">《石油天然气基础设施规划建设与运营管理办法》 2025年第35号令</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>天然气</span><span>石油</span><span>基础设施</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-08</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260608_1405753.html" target="_blank" rel="noopener noreferrer">关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>生态保护</span><span>投资</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>04-09</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202604/t20260409_1404577.html" target="_blank" rel="noopener noreferrer">《电力重大事故隐患判定标准及治理监督管理规定》 2026年第41号令</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>能源</span><span>电力</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-01</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260601_1405606.html" target="_blank" rel="noopener noreferrer">关于印发《非化石能源电力消费核算指南(试行)》的通知(发改能源〔2026〕622号)</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>能源</span><span>电力</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-08</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.gov.cn/zhengce/content/202606/content_7071451.htm" target="_blank" rel="noopener noreferrer">国务院关于印发《现代化应急体系建设“十五五”规划》的通知</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>应急</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-05</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.gov.cn/zhengce/content/202606/content_7071204.htm" target="_blank" rel="noopener noreferrer">国办关于加强监管防范风险促进私募投资基金高质量发展的指导意见</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>12-10</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="http://www.csrc.gov.cn/csrc/c100028/c1615671/content.shtml" target="_blank" rel="noopener noreferrer">证监会组织开展“读懂上市公司报告”投资者教育专项活动</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>?????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.mofcom.gov.cn/xwfb/bldhd/art/2026/art_51a86ec368534e3b95361103ab167f33.html" target="_blank" rel="noopener noreferrer">“投资中国”德国企业圆桌会在杜塞尔多夫举行</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026061013073475591/index.html" target="_blank" rel="noopener noreferrer">中国人民银行与国际清算银行共同主办“应对全球金融不确定性——金融市场发展、投资策略与国际货币体系”高级别会议</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-01</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.gov.cn/zhengce/content/202606/content_7070755.htm" target="_blank" rel="noopener noreferrer">国务院关于对外投资的规定</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>???????</footer>
+      </article>
+    </div>
+          <aside class="tools">
+            <section>
+              <h3>知更工具</h3>
+              <div class="tool-grid"><button title="知更认证后开放">项目机会库</button><button title="知更认证后开放">区域政策比对</button><button title="知更认证后开放">风险条款摘要</button></div>
+            </section>
+            <section>
+              <h3>待补信源</h3>
+              <ul><li>能源局政策</li><li>地方项目清单</li><li>重大工程招投标</li></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+    
+      <section class="space-panel " data-panel="finance">
+        <div class="space-head">
+          <div>
+            <p>投融资、财务、金融机构</p>
+            <h2>财政金融空间</h2>
+          </div>
+          <div class="brief">今日重点集中在????，建议关注资金环境、融资窗口、监管倾向。</div>
+        </div>
+        <div class="signals"><span>资金环境</span><span>融资窗口</span><span>监管倾向</span><span>财政节奏</span></div>
+        <div class="workspace">
+          <div class="feed">
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="http://zwgls.mof.gov.cn/ywgg/202606/t20260610_3991432.htm" target="_blank" rel="noopener noreferrer">财政部第二次续发行2026年记账式附息（八期）国债</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span><span>国债</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-11</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="http://zwgls.mof.gov.cn/ywgg/202606/t20260605_3991208.htm" target="_blank" rel="noopener noreferrer">财政部发行2026年记账式附息（十二期）国债</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span><span>国债</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-11</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="http://dl.mof.gov.cn/caizhengjiancha/202604/t20260420_3987903.htm" target="_blank" rel="noopener noreferrer">财政部大连监管局：落实“三个一”做好预算执行常态化监管工作</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span><span>预算</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026061013073475591/index.html" target="_blank" rel="noopener noreferrer">中国人民银行与国际清算银行共同主办“应对全球金融不确定性——金融市场发展、投资策略与国际货币体系”高级别会议</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>金融</span><span>货币</span></div>
+        <footer>????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>30</strong>
+        </div>
+        <a href="https://www.mof.gov.cn/zhengwuxinxi/caizhengxinwen/202606/t20260610_3991434.htm" target="_blank" rel="noopener noreferrer">财政部召开2027年中央部门预算编制工作动员会</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span><span>预算</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>30</strong>
+        </div>
+        <a href="http://zwgls.mof.gov.cn/ywgg/202606/t20260609_3991356.htm" target="_blank" rel="noopener noreferrer">财政部发行2026年记账式贴现（三十五期）国债</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span><span>国债</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.mof.gov.cn/zhengwuxinxi/caizhengxinwen/202606/t20260612_3991522.htm" target="_blank" rel="noopener noreferrer">廖岷出席亚太经合组织财政高官会并致辞</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026061214273613328/index.html" target="_blank" rel="noopener noreferrer">2026年5月金融统计数据报告</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>金融</span></div>
+        <footer>????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="http://jjs.mof.gov.cn/zhengcefagui/202606/t20260604_3991164.htm" target="_blank" rel="noopener noreferrer">财政部、商务部修订印发《服务业发展资金管理办法》</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>财政</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-08</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260608_1405753.html" target="_blank" rel="noopener noreferrer">关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>预算</span></div>
+        <footer>???????</footer>
+      </article>
+    </div>
+          <aside class="tools">
+            <section>
+              <h3>知更工具</h3>
+              <div class="tool-grid"><button title="知更认证后开放">融资环境雷达</button><button title="知更认证后开放">政策原文摘要</button><button title="知更认证后开放">机构观点汇总</button></div>
+            </section>
+            <section>
+              <h3>待补信源</h3>
+              <ul><li>人民银行动态适配</li><li>券商研报</li><li>投资机构观点</li></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+    
+      <section class="space-panel " data-panel="regional">
+        <div class="space-head">
+          <div>
+            <p>地方政府 / 园区 / 招商团队</p>
+            <h2>区域招商空间</h2>
+          </div>
+          <div class="brief">今日重点集中在????，建议关注招商方向、资金支持、产业目录。</div>
+        </div>
+        <div class="signals"><span>招商方向</span><span>资金支持</span><span>产业目录</span><span>区域项目</span></div>
+        <div class="workspace">
+          <div class="feed">
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-08</span>
+          <span>????</span>
+          <strong>44</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/tz/202606/t20260608_1405753.html" target="_blank" rel="noopener noreferrer">关于印发《生态保护修复领域中央预算内投资专项管理办法》的通知(发改农经〔2026〕713号)</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span><span>预算内</span><span>生态保护</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>01-09</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202601/t20260109_1403140.html" target="_blank" rel="noopener noreferrer">《中央预算内投资补助和贴息项目管理办法》 2025年第38号令</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span><span>预算内</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>12-24</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/fzggwl/202512/t20251224_1402564.html" target="_blank" rel="noopener noreferrer">《鼓励外商投资产业目录(2025年版)》 2025年第37号令</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span><span>目录</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-13</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="http://www.moa.gov.cn/xw/zwdt/202606/t20260613_6484994.htm" target="_blank" rel="noopener noreferrer">第十六届金砖国家农业部长会议在印多尔召开</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>农业</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="http://www.moa.gov.cn/xw/zwdt/202606/t20260610_6484887.htm" target="_blank" rel="noopener noreferrer">农业农村部召开科技创新领导小组会议强调 前瞻布局农业未来产业 加快推进高水平农业科技自立自强</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>农业</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-05</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.gov.cn/zhengce/content/202606/content_7071204.htm" target="_blank" rel="noopener noreferrer">国办关于加强监管防范风险促进私募投资基金高质量发展的指导意见</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>03-16</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xxgk/zcfb/gg/202603/t20260316_1404162.html" target="_blank" rel="noopener noreferrer">关于2026年棉花关税配额外优惠关税税率加工贸易进口配额申领有关事项的公告 2026年第2号</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>棉花</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>12-10</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="http://www.csrc.gov.cn/csrc/c100028/c1615671/content.shtml" target="_blank" rel="noopener noreferrer">证监会组织开展“读懂上市公司报告”投资者教育专项活动</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>?????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.mofcom.gov.cn/xwfb/bldhd/art/2026/art_51a86ec368534e3b95361103ab167f33.html" target="_blank" rel="noopener noreferrer">“投资中国”德国企业圆桌会在杜塞尔多夫举行</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>???????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.pbc.gov.cn/goutongjiaoliu/113456/113469/2026061013073475591/index.html" target="_blank" rel="noopener noreferrer">中国人民银行与国际清算银行共同主办“应对全球金融不确定性——金融市场发展、投资策略与国际货币体系”高级别会议</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>投资</span></div>
+        <footer>????????</footer>
+      </article>
+    </div>
+          <aside class="tools">
+            <section>
+              <h3>知更工具</h3>
+              <div class="tool-grid"><button title="知更认证后开放">招商话术</button><button title="知更认证后开放">政策对标</button><button title="知更认证后开放">项目线索</button></div>
+            </section>
+            <section>
+              <h3>待补信源</h3>
+              <ul><li>省市政策库</li><li>园区招商政策</li><li>地方发改委项目</li></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+    
+      <section class="space-panel " data-panel="macro_ops">
+        <div class="space-head">
+          <div>
+            <p>企业主 / 经营管理者</p>
+            <h2>宏观经营空间</h2>
+          </div>
+          <div class="brief">今日重点集中在????，建议关注需求变化、价格趋势、经营压力。</div>
+        </div>
+        <div class="signals"><span>需求变化</span><span>价格趋势</span><span>经营压力</span><span>市场判断</span></div>
+        <div class="workspace">
+          <div class="feed">
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>32</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963923.html" target="_blank" rel="noopener noreferrer">2026年5月份居民消费价格同比上涨1.2%</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>居民消费</span><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>05-31</span>
+          <span>????</span>
+          <strong>31</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202605/t20260531_1963824.html" target="_blank" rel="noopener noreferrer">2026年5月中国采购经理指数运行情况</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>采购经理</span><span>PMI</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://36kr.com/newsflashes/3851282943792133" target="_blank" rel="noopener noreferrer">云南铜业：今年以来硫酸销售价格持续处于高位</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>36???</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-12</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://36kr.com/newsflashes/3851282375971842" target="_blank" rel="noopener noreferrer">美格智能：存储芯片价格上涨成本在合理、有序向下游客户传导</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>36???</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-10</span>
+          <span>????</span>
+          <strong>20</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260610_1963922.html" target="_blank" rel="noopener noreferrer">2026年5月份工业生产者出厂价格同比上涨3.9% 环比上涨0.5%</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-04</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.ndrc.gov.cn/xwdt/xwfb/202606/t20260604_1405695.html" target="_blank" rel="noopener noreferrer">国内成品油价格调整</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-04</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202606/t20260603_1963874.html" target="_blank" rel="noopener noreferrer">2026年5月下旬流通领域重要生产资料市场价格变动情况</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-04</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.shanghai.gov.cn/nw12344/20260604/050b3a7e01004ad89d6f4798a5ca0139.html" target="_blank" rel="noopener noreferrer">上海市发展和改革委员会关于车用汽、柴油价格的通知（）</a>
+        <p>适合用于价格趋势、需求变化和行业经营压力判断。</p>
+        <div class="matches"><span>价格</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>06-03</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.gd.gov.cn/zwgk/wjk/qbwj/yfh/content/post_4906288.html" target="_blank" rel="noopener noreferrer">广东省人民政府关于禁止在广东省漠阳江防洪治理工程占地范围新增建设项目和迁入人口的通告</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>人口</span></div>
+        <footer>?????????</footer>
+      </article>
+    
+      <article class="intel-card">
+        <div class="meta">
+          <span>05-27</span>
+          <span>????</span>
+          <strong>19</strong>
+        </div>
+        <a href="https://www.stats.gov.cn/sj/zxfb/202605/t20260527_1963808.html" target="_blank" rel="noopener noreferrer">2026年1—4月份全国规模以上工业企业利润增长18.2%</a>
+        <p>适合用于宏观背景、行业月报和客户简报，帮助顾问快速建立事实底座。</p>
+        <div class="matches"><span>利润</span></div>
+        <footer>?????????</footer>
+      </article>
+    </div>
+          <aside class="tools">
+            <section>
+              <h3>知更工具</h3>
+              <div class="tool-grid"><button title="知更认证后开放">经营晨报</button><button title="知更认证后开放">指标看板</button><button title="知更认证后开放">管理层简报</button></div>
+            </section>
+            <section>
+              <h3>待补信源</h3>
+              <ul><li>高频指标</li><li>行业协会数据</li><li>消费与就业补充源</li></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+    
+    </main>
+  </div>
+  <script>
+    const tabs = Array.from(document.querySelectorAll(".space-tab"));
+    const panels = Array.from(document.querySelectorAll(".space-panel"));
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const id = tab.dataset.space;
+        tabs.forEach((button) => button.classList.toggle("active", button.dataset.space === id));
+        panels.forEach((panel) => panel.classList.toggle("active", panel.dataset.panel === id));
+      });
+    });
+  </script>
+</body>
+</html>

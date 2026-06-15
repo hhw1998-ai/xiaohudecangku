@@ -1,0 +1,217 @@
+{
+  "name": "Consulting Radar Source Registry",
+  "version": "0.1.0",
+  "updated_at": "2026-06-13",
+  "principles": [
+    "优先接入公开权威网页、公告页和公开报告页",
+    "公众号先作为信源候选台账，不在第一阶段强行自动抓取",
+    "保留原文链接、发布时间、来源机构和采集方式",
+    "只生成摘要、标签、评分和咨询价值判断，避免复制完整版权内容"
+  ],
+  "source_types": [
+    {
+      "type": "government_policy",
+      "label": "政府政策",
+      "default_ingestion": "public_web_list_detail",
+      "fields": ["title", "url", "published_at", "issuer", "policy_level", "region", "industry_tags", "summary", "consulting_value"]
+    },
+    {
+      "type": "company_disclosure",
+      "label": "公司公告",
+      "default_ingestion": "public_disclosure_search_pdf",
+      "fields": ["company", "ticker", "title", "url", "published_at", "announcement_type", "fiscal_period", "strategy_keywords", "summary"]
+    },
+    {
+      "type": "consulting_insight",
+      "label": "咨询洞察",
+      "default_ingestion": "public_insight_page",
+      "fields": ["firm", "title", "url", "published_at", "industry_tags", "framework_clues", "chart_clues", "summary", "ppt_use_case"]
+    },
+    {
+      "type": "business_media",
+      "label": "商业媒体",
+      "default_ingestion": "public_web_monitor",
+      "fields": ["source", "title", "url", "published_at", "company_entities", "sector", "event_type", "summary"]
+    },
+    {
+      "type": "wechat_candidate",
+      "label": "公众号候选",
+      "default_ingestion": "manual_or_authorized",
+      "fields": ["account_name", "topic_scope", "free_to_follow", "frequency", "compliance_status", "notes"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "gov-state-council-policy",
+      "name": "国务院政策文件库",
+      "type": "government_policy",
+      "url": "https://www.gov.cn/zhengce/zhengcewenjianku/",
+      "priority": "P0",
+      "ingestion": "public_web_list_detail",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["政策背景", "产业规划", "客户简报", "区域机会识别"],
+      "notes": "国家级政策权威入口，适合做政策雷达的最高优先级来源。"
+    },
+    {
+      "id": "gov-ndrc-policy",
+      "name": "国家发展改革委政策发布",
+      "type": "government_policy",
+      "url": "https://www.ndrc.gov.cn/xxgk/zcfb/",
+      "priority": "P0",
+      "ingestion": "public_web_list_detail",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["宏观政策", "产业政策", "投资政策", "区域发展"],
+      "notes": "发改委政策文件、通知和产业相关文件。"
+    },
+    {
+      "id": "gov-miit-policy",
+      "name": "工业和信息化部政策文件",
+      "type": "government_policy",
+      "url": "https://www.miit.gov.cn/zwgk/zcwj/",
+      "priority": "P0",
+      "ingestion": "public_web_list_detail",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["制造业", "数字经济", "工业互联网", "中小企业"],
+      "notes": "制造业和信息通信客户项目的高价值政策源。"
+    },
+    {
+      "id": "gov-stats-data",
+      "name": "国家统计局数据",
+      "type": "government_policy",
+      "url": "https://www.stats.gov.cn/sj/",
+      "priority": "P0",
+      "ingestion": "public_data_page_monitor",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["行业监测", "市场测算", "经营分析", "宏观背景"],
+      "notes": "更偏数据监测，需要后续区分新闻稿、数据表和数据库入口。"
+    },
+    {
+      "id": "cninfo-disclosure",
+      "name": "巨潮资讯",
+      "type": "company_disclosure",
+      "url": "http://www.cninfo.com.cn/",
+      "priority": "P0",
+      "ingestion": "public_disclosure_search_pdf",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["年报分析", "竞品跟踪", "战略复盘", "财务与经营拆解"],
+      "notes": "A 股公告核心入口；年报 PDF 解析会是重要子任务。"
+    },
+    {
+      "id": "hkexnews-disclosure",
+      "name": "港交所披露易",
+      "type": "company_disclosure",
+      "url": "https://www.hkexnews.hk/index_c.htm",
+      "priority": "P1",
+      "ingestion": "public_disclosure_search_pdf",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["港股公告", "上市公司跟踪", "竞品研究"],
+      "notes": "适合覆盖港股客户和行业龙头。"
+    },
+    {
+      "id": "mckinsey-cn-insights",
+      "name": "麦肯锡中国",
+      "type": "consulting_insight",
+      "url": "https://www.mckinsey.com.cn/",
+      "priority": "P1",
+      "ingestion": "public_insight_page",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["方法论框架", "行业趋势", "PPT素材", "客户高管沟通"],
+      "notes": "公开洞见可抽取观点和框架，不应镜像全文。"
+    },
+    {
+      "id": "bcg-cn-insights",
+      "name": "BCG 中国洞察",
+      "type": "consulting_insight",
+      "url": "https://www.bcg.com/zh-cn/publications",
+      "priority": "P1",
+      "ingestion": "public_insight_page",
+      "status": "needs_probe",
+      "consulting_use_cases": ["战略", "行业趋势", "组织转型", "数字化"],
+      "notes": "需要确认中文列表页结构。"
+    },
+    {
+      "id": "deloitte-cn-insights",
+      "name": "德勤中国洞察",
+      "type": "consulting_insight",
+      "url": "https://www2.deloitte.com/cn/zh/insights.html",
+      "priority": "P1",
+      "ingestion": "public_insight_page",
+      "status": "needs_probe",
+      "consulting_use_cases": ["财务", "风险", "行业报告", "数字化"],
+      "notes": "咨询和行业报告较多，需按行业标签归类。"
+    },
+    {
+      "id": "36kr-news",
+      "name": "36氪",
+      "type": "business_media",
+      "url": "https://36kr.com/",
+      "priority": "P1",
+      "ingestion": "public_web_monitor",
+      "status": "ready_to_probe",
+      "consulting_use_cases": ["融资事件", "商业模式", "新兴赛道", "创业公司"],
+      "notes": "作为线索发现源，重要事件需要回溯公司官网或公告确认。"
+    },
+    {
+      "id": "wechat-iresearch",
+      "name": "艾瑞咨询",
+      "type": "wechat_candidate",
+      "url": null,
+      "priority": "P2",
+      "ingestion": "manual_or_authorized",
+      "status": "candidate",
+      "consulting_use_cases": ["互联网", "消费", "营销", "行业报告"],
+      "notes": "免费关注型公众号候选；需确认授权或人工录入路径。"
+    },
+    {
+      "id": "wechat-analysys",
+      "name": "易观分析",
+      "type": "wechat_candidate",
+      "url": null,
+      "priority": "P2",
+      "ingestion": "manual_or_authorized",
+      "status": "candidate",
+      "consulting_use_cases": ["数字经济", "互联网", "用户行为"],
+      "notes": "公众号候选，后续可维护文章标题和原文链接。"
+    },
+    {
+      "id": "wechat-questmobile",
+      "name": "QuestMobile",
+      "type": "wechat_candidate",
+      "url": null,
+      "priority": "P2",
+      "ingestion": "manual_or_authorized",
+      "status": "candidate",
+      "consulting_use_cases": ["移动互联网", "用户洞察", "流量趋势"],
+      "notes": "数据型内容较适合做顾问晨报。"
+    },
+    {
+      "id": "wechat-ccid",
+      "name": "赛迪顾问",
+      "type": "wechat_candidate",
+      "url": null,
+      "priority": "P2",
+      "ingestion": "manual_or_authorized",
+      "status": "candidate",
+      "consulting_use_cases": ["产业研究", "园区", "数字经济", "制造业"],
+      "notes": "与政策和产业规划场景匹配度高。"
+    },
+    {
+      "id": "wechat-zero2ipo",
+      "name": "清科研究",
+      "type": "wechat_candidate",
+      "url": null,
+      "priority": "P2",
+      "ingestion": "manual_or_authorized",
+      "status": "candidate",
+      "consulting_use_cases": ["股权投资", "VC/PE", "融资", "资本市场"],
+      "notes": "适合资本和投融资专题。"
+    }
+  ],
+  "scoring_model_draft": {
+    "importance": "政策层级、公司影响力、融资规模、报告机构权威性",
+    "freshness": "发布时间与当前日期的距离",
+    "credibility": "来源权威度和是否可回溯原文",
+    "consulting_relevance": "是否能服务战略、组织、市场、运营、投融资、数字化等咨询场景",
+    "client_relevance": "是否匹配用户维护的行业、地区、公司和客户清单"
+  }
+}
