@@ -73,6 +73,7 @@ outputs/*.db-wal
 # Project scratch artifacts
 work/__pycache__/
 work/app-*.js
+work/frontend-*.js
 work/online-*.html
 work/online-*.js
 work/miit-sample.json
