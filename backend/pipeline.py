@@ -9,8 +9,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DB = Path(os.environ.get("BAILING_DB_PATH", str(ROOT / "outputs" / "bailing.db")))
+DATABASE_URL = os.environ.get("DATABASE_URL") or os.environ.get("SUPABASE_DATABASE_URL")
 PUBLIC_JSON = ROOT / "outputs" / "bailing-public-data.json"
 SCHEMA = Path(__file__).with_name("schema.sql")
+SUPABASE_SCHEMA = Path(__file__).with_name("supabase_schema.sql")
 
 
 def now():
@@ -21,7 +23,41 @@ def U(value):
     return value.encode("ascii").decode("unicode_escape")
 
 
+def using_postgres():
+    return bool(DATABASE_URL)
+
+
+def adapt_sql(sql):
+    if not using_postgres():
+        return sql
+    return sql.replace("?", "%s")
+
+
+def execute(conn, sql, params=()):
+    return conn.execute(adapt_sql(sql), params)
+
+
+class Db:
+    def __init__(self, conn):
+        self.conn = conn
+
+    def __enter__(self):
+        return self.conn
+
+    def __exit__(self, exc_type, exc, tb):
+        if exc_type is None:
+            self.conn.commit()
+        else:
+            self.conn.rollback()
+        self.conn.close()
+
+
 def connect():
+    if using_postgres():
+        import psycopg
+        from psycopg.rows import dict_row
+
+        return Db(psycopg.connect(DATABASE_URL, row_factory=dict_row))
     DB.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
@@ -30,12 +66,23 @@ def connect():
 
 def init_db():
     with connect() as conn:
-        conn.executescript(SCHEMA.read_text(encoding="utf-8"))
-        conn.execute(
-            "INSERT OR IGNORE INTO users(id,name,role,industry,created_at) VALUES(?,?,?,?,?)",
-            ("demo-consultant", U("\\u77e5\\u66f4\\u4f53\\u9a8c\\u987e\\u95ee"), "verified", U("\\u7ba1\\u7406\\u54a8\\u8be2"), now()),
-        )
-    return DB
+        if using_postgres():
+            conn.execute(SUPABASE_SCHEMA.read_text(encoding="utf-8"))
+        else:
+            conn.executescript(SCHEMA.read_text(encoding="utf-8"))
+        if using_postgres():
+            execute(
+                conn,
+                "INSERT INTO users(id,name,role,industry,created_at) VALUES(?,?,?,?,?) ON CONFLICT(id) DO NOTHING",
+                ("demo-consultant", U("\\u77e5\\u66f4\\u4f53\\u9a8c\\u987e\\u95ee"), "verified", U("\\u7ba1\\u7406\\u54a8\\u8be2"), now()),
+            )
+        else:
+            execute(
+                conn,
+                "INSERT OR IGNORE INTO users(id,name,role,industry,created_at) VALUES(?,?,?,?,?)",
+                ("demo-consultant", U("\\u77e5\\u66f4\\u4f53\\u9a8c\\u987e\\u95ee"), "verified", U("\\u7ba1\\u7406\\u54a8\\u8be2"), now()),
+            )
+    return "postgres" if using_postgres() else DB
 
 
 def content_hash(item):
@@ -52,7 +99,8 @@ def upsert_public_data(data):
     stamp = now()
     with connect() as conn:
         for source in data.get("sources", []):
-            conn.execute(
+            execute(
+                conn,
                 """
                 INSERT INTO sources(source_id,name,url,status,mode,category,items,latency_ms,updated_at)
                 VALUES(?,?,?,?,?,?,?,?,?)
@@ -73,7 +121,7 @@ def upsert_public_data(data):
                     stamp,
                 ),
             )
-        existing = {row["id"] for row in conn.execute("SELECT id FROM items")}
+        existing = {row["id"] for row in execute(conn, "SELECT id FROM items")}
         added = 0
         for item in data.get("items", []):
             item_id = item.get("id")
@@ -81,7 +129,8 @@ def upsert_public_data(data):
                 continue
             if item_id not in existing:
                 added += 1
-            conn.execute(
+            execute(
+                conn,
                 """
                 INSERT INTO items(
                   id,source_id,source_name,category,authority,title,url,published_at,tags_json,
@@ -122,17 +171,22 @@ def upsert_public_data(data):
 def create_run(run_type):
     init_db()
     with connect() as conn:
-        cur = conn.execute(
+        cur = execute(
+            conn,
             "INSERT INTO source_runs(run_type,status,started_at,message) VALUES(?,?,?,?)",
             (run_type, "running", now(), "started"),
         )
+        if using_postgres():
+            row = execute(conn, "SELECT currval(pg_get_serial_sequence('source_runs','id')) AS id").fetchone()
+            return row["id"]
         return cur.lastrowid
 
 
 def finish_run(run_id, status, message="", added_count=0):
     data = load_public_json() if PUBLIC_JSON.exists() else {"items": [], "sources": []}
     with connect() as conn:
-        conn.execute(
+        execute(
+            conn,
             """
             UPDATE source_runs
             SET status=?,finished_at=?,item_count=?,source_count=?,added_count=?,message=?

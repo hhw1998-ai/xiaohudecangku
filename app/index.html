@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
@@ -35,7 +35,7 @@
     const state={view:'home',category:'全部',query:'',space:'',role:localStorage.getItem('bz_role')||'public',saved:JSON.parse(localStorage.getItem('bz_saved')||'[]'),subscriptions:JSON.parse(localStorage.getItem('bz_subscriptions')||'["十五五","投资","PMI"]'),briefs:JSON.parse(localStorage.getItem('bz_briefs')||'[]'),toolResult:null};
     const qs=id=>document.getElementById(id); const esc=v=>String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s])); const save=()=>{localStorage.setItem('bz_role',state.role);localStorage.setItem('bz_saved',JSON.stringify(state.saved));localStorage.setItem('bz_subscriptions',JSON.stringify(state.subscriptions));localStorage.setItem('bz_briefs',JSON.stringify(state.briefs));};
     async function api(path,opts={}){const res=await fetch(API_BASE+path,{headers:{'Content-Type':'application/json'},...opts});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);return res.json()}
-    async function refreshLiveData(){try{apiState.status='connecting';const [health,items,sources,runs]=await Promise.all([api('/api/health'),api('/api/items?limit=200'),api('/api/sources'),api('/api/runs')]);data.items=items.items||data.items;data.sources=sources.sources||data.sources;data.item_count=data.items.length;apiState.status='live';apiState.message=`实时后端已连接：${health.counts?.items||data.items.length} items / ${health.counts?.sources||data.sources.length} sources`;apiState.updated_at=health.time||'';apiState.runs=runs.runs||[];render()}catch(err){apiState.status='fallback';apiState.message='实时后端暂不可用，正在使用静态快照：'+err.message;render()}}
+    async function refreshLiveData(){try{apiState.status='connecting';const [health,items,sources,runs]=await Promise.all([api('/api/health'),api('/api/items?limit=500'),api('/api/sources'),api('/api/runs')]);data.items=items.items||data.items;data.sources=sources.sources||data.sources;data.item_count=data.items.length;apiState.status='live';apiState.message=`实时后端已连接：${health.counts?.items||data.items.length} items / ${health.counts?.sources||data.sources.length} sources`;apiState.updated_at=health.time||'';apiState.runs=runs.runs||[];render()}catch(err){apiState.status='fallback';apiState.message='实时后端暂不可用，正在使用静态快照：'+err.message;render()}}
     async function runTool(toolId){const out=qs('toolOutput');if(out)out.textContent='正在调用知更实时工作台...';try{let payload;if(toolId==='brief'){payload=await api('/api/briefs/generate',{method:'POST',body:JSON.stringify({title:'知更客户晨报',keywords:state.subscriptions,categories:['产业监管','公司公告','国家政策'],limit:8})});state.toolResult={type:'brief',payload};state.briefs.unshift({created_at:payload.generated_at,title:payload.title,body:payload.summary});state.briefs=state.briefs.slice(0,12);save()}else{payload=await api('/api/impact-matrix',{method:'POST',body:JSON.stringify({topic:state.subscriptions.join('、'),keywords:state.subscriptions,categories:['产业监管','公司公告','国家政策'],limit:8})});state.toolResult={type:'matrix',payload}}renderWorkspace();toast('实时工具已完成','结果来自 Render 后端 API')}catch(err){if(out)out.textContent='调用失败：'+err.message;toast('工具调用失败',err.message)}}
     function toast(t,b){const el=qs('toast');el.querySelector('b').textContent=t;el.querySelector('p').textContent=b;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2600)}
     function pillClass(cat){return cat==='国家政策'||cat==='地方政策'?'policy':cat==='财政金融'?'finance':''}
@@ -65,3 +65,4 @@
   </script>
 </body>
 </html>
+

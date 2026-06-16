@@ -54,11 +54,16 @@ backend/supabase_schema.sql
 3. 粘贴 `backend/supabase_schema.sql`
 4. Run
 
-当前 Render 第一版仍使用 SQLite 快速上线。Supabase 表先建好，下一步把后端存储从 SQLite 切到 Supabase/Postgres。
+Render 环境变量里添加：
+
+```text
+DATABASE_URL=你的 Supabase Postgres 连接串
+```
+
+设置完成后，后端会自动从临时 SQLite 切换到 Supabase/Postgres。没有 `DATABASE_URL` 时仍会使用 SQLite 兜底。
 
 ## 4. 注意事项
 
 Render 免费服务会休眠，第一次访问会慢一些。
 
-当前 `render.yaml` 使用 `/tmp/bailing.db`，适合验证后端 API，但不适合长期保存历史数据。正式版要切到 Supabase。
-
+如果 `/api/health` 返回的 `db` 是 `/tmp/bailing.db`，说明仍在使用临时库；如果返回 `postgres`，说明已经切到 Supabase 持久库。

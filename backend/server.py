@@ -29,7 +29,7 @@ def now():
 
 def rows(sql, params=()):
     with pipeline.connect() as conn:
-        return [dict(row) for row in conn.execute(sql, params)]
+        return [dict(row) for row in pipeline.execute(conn, sql, params)]
 
 
 def one(sql, params=()):
@@ -115,7 +115,8 @@ def create_brief(payload):
         "items": picked,
     }
     with pipeline.connect() as conn:
-        conn.execute(
+        pipeline.execute(
+            conn,
             "INSERT INTO briefs(id,user_id,title,brief_type,generated_at,summary,items_json) VALUES(?,?,?,?,?,?,?)",
             (
                 brief["id"],
@@ -141,7 +142,8 @@ def create_watchlist(payload):
         "updated_at": now(),
     }
     with pipeline.connect() as conn:
-        conn.execute(
+        pipeline.execute(
+            conn,
             "INSERT INTO watchlists(id,user_id,name,keywords_json,categories_json,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
             (
                 watch["id"],

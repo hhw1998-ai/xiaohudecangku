@@ -10,4 +10,5 @@ services:
         value: "7"
       - key: BAILING_DB_PATH
         value: "/tmp/bailing.db"
-
+      - key: DATABASE_URL
+        sync: false

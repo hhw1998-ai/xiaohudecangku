@@ -1,3 +1,1 @@
-# No external runtime dependencies are required for the current backend.
-# The app uses Python stdlib: http.server, sqlite3, urllib, json, threading.
-
+psycopg[binary]==3.2.3
