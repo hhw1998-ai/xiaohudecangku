@@ -27,6 +27,14 @@ def now():
     return datetime.now().replace(microsecond=0).isoformat()
 
 
+def db_status():
+    return {
+        "driver": "postgres" if pipeline.using_postgres() else "sqlite",
+        "database_url_present": bool(os.environ.get("DATABASE_URL") or os.environ.get("SUPABASE_DATABASE_URL")),
+        "db": "postgres" if pipeline.using_postgres() else str(pipeline.DB),
+    }
+
+
 def rows(sql, params=()):
     with pipeline.connect() as conn:
         return [dict(row) for row in pipeline.execute(conn, sql, params)]
@@ -227,10 +235,13 @@ class Handler(BaseHTTPRequestHandler):
         query = parse_qs(parsed.query)
         try:
             if parsed.path == "/api/health":
+                db = db_status()
                 self.send_json({
                     "ok": True,
                     "time": now(),
-                    "db": str(pipeline.DB),
+                    "db": db["db"],
+                    "driver": db["driver"],
+                    "database_url_present": db["database_url_present"],
                     "next_scheduled_run": next_daily_time().isoformat(),
                     "counts": {
                         "items": one("SELECT COUNT(*) AS n FROM items")["n"],
